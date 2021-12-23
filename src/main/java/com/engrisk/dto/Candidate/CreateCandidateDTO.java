@@ -1,6 +1,6 @@
 package com.engrisk.dto.Candidate;
 
-import com.engrisk.utils.SexType;
+import com.engrisk.enums.SexType;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;

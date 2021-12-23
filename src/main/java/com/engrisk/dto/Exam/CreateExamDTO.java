@@ -1,6 +1,6 @@
 package com.engrisk.dto.Exam;
 
-import com.engrisk.utils.ExamType;
+import com.engrisk.enums.ExamType;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;

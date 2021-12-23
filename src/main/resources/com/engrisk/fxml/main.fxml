@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import java.lang.String?>
+<?import javafx.geometry.Insets?>
+<?import javafx.geometry.Point3D?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Font?>
+<?import javafx.scene.text.Text?>
+
+
+<HBox maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0"
+      prefWidth="600.0" stylesheets="@../css/main.css" xmlns="http://javafx.com/javafx/17"
+      fx:controller="com.engrisk.controllers.MainController"
+      xmlns:fx="http://javafx.com/fxml/1">
+    <VBox alignment="TOP_CENTER" maxHeight="1.7976931348623157E308" maxWidth="200.0" minWidth="200.0"
+          prefWidth="200.0" styleClass="menu" HBox.hgrow="NEVER">
+        <Text fill="WHITE" strokeType="OUTSIDE" strokeWidth="0.0" text="Engrisk">
+            <font>
+                <Font size="30.0"/>
+            </font>
+            <VBox.margin>
+                <Insets bottom="12.0" top="12.0"/>
+            </VBox.margin>
+            <rotationAxis>
+                <Point3D/>
+            </rotationAxis>
+        </Text>
+        <VBox fx:id="menu" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minWidth="-Infinity"
+              spacing="16.0" VBox.vgrow="ALWAYS">
+            <padding>
+                <Insets left="8.0"/>
+            </padding>
+            <Button fx:id="examButton" alignment="TOP_LEFT" contentDisplay="CENTER" graphicTextGap="0.0"
+                    maxWidth="1.7976931348623157E308" mnemonicParsing="false" text="Khóa thi" textFill="WHITE">
+                <font>
+                    <Font size="16.0"/>
+                </font>
+                <styleClass>
+                    <String fx:value="menu-button"/>
+                    <String fx:value="active"/>
+                </styleClass>
+            </Button>
+            <Button fx:id="roomButton" alignment="TOP_LEFT" contentDisplay="CENTER" graphicTextGap="0.0"
+                    maxWidth="1.7976931348623157E308" mnemonicParsing="false" styleClass="menu-button"
+                    text="Phòng thi" textFill="WHITE">
+                <font>
+                    <Font size="16.0"/>
+                </font>
+            </Button>
+            <Button fx:id="candidateButton" alignment="TOP_LEFT" contentDisplay="CENTER" graphicTextGap="0.0"
+                    maxWidth="1.7976931348623157E308" mnemonicParsing="false" styleClass="menu-button"
+                    text="Thí sinh" textFill="WHITE">
+                <font>
+                    <Font size="16.0"/>
+                </font>
+            </Button>
+            <Button fx:id="attendanceButton" alignment="TOP_LEFT" contentDisplay="CENTER" graphicTextGap="0.0"
+                    maxWidth="1.7976931348623157E308" mnemonicParsing="false" styleClass="menu-button"
+                    text="Tra cứu kết quả" textFill="WHITE">
+                <font>
+                    <Font size="16.0"/>
+                </font>
+            </Button>
+        </VBox>
+    </VBox>
+    <VBox fx:id="content" prefHeight="200.0" prefWidth="100.0" style="-fx-background-color: white;"
+          HBox.hgrow="ALWAYS"/>
+</HBox>

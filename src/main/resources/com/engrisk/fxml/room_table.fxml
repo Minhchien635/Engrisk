@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.VBox?>
+<VBox maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minHeight="0.0" minWidth="0.0" spacing="16.0"
+      stylesheets="@../css/main.css" VBox.vgrow="ALWAYS" xmlns="http://javafx.com/javafx/17"
+      xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.engrisk.controllers.RoomTableController">
+    <padding>
+        <Insets bottom="16.0" left="16.0" right="16.0" top="16.0"/>
+    </padding>
+    <TableView fx:id="table" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minHeight="0.0"
+               minWidth="0.0" VBox.vgrow="ALWAYS">
+        <columns>
+            <TableColumn fx:id="examNameColumn" editable="false" minWidth="100.0" prefWidth="-1.0" text="Khóa thi"/>
+            <TableColumn fx:id="examTypeColumn" editable="false" minWidth="100.0" prefWidth="-1.0" text="Trình độ"/>
+            <TableColumn fx:id="examDateColumn" editable="false" minWidth="100.0" prefWidth="-1.0" text="Ngày thi"/>
+            <TableColumn fx:id="roomNameColumn" editable="false" minWidth="100.0" prefWidth="-1.0" text="Phòng thi"/>
+        </columns>
+    </TableView>
+</VBox>
