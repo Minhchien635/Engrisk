@@ -3,9 +3,9 @@
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.VBox?>
-<VBox maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minHeight="0.0" minWidth="0.0" spacing="16.0"
-      stylesheets="@../css/main.css" VBox.vgrow="ALWAYS" xmlns="http://javafx.com/javafx/17"
-      xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.engrisk.controllers.RoomTableController">
+<VBox xmlns:fx="http://javafx.com/fxml/1" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minHeight="0.0" minWidth="0.0"
+      spacing="16.0" stylesheets="@../css/main.css" VBox.vgrow="ALWAYS"
+      xmlns="http://javafx.com/javafx/17" fx:controller="com.engrisk.controllers.RoomTableController">
     <padding>
         <Insets bottom="16.0" left="16.0" right="16.0" top="16.0"/>
     </padding>

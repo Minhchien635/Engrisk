@@ -20,8 +20,8 @@ public class DateUtils {
 
     public static LocalDate parseLocalDate(Date date) {
         return Instant.ofEpochMilli(date.getTime())
-                      .atZone(ZoneId.systemDefault())
-                      .toLocalDate();
+                .atZone(ZoneId.systemDefault())
+                .toLocalDate();
     }
 
     public static boolean isOverlapping(Date start1, Date end1, Date start2, Date end2) {

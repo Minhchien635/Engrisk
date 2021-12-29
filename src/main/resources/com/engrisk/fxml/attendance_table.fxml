@@ -1,37 +1,38 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <?import javafx.geometry.Insets?>
-<?import javafx.scene.control.Button?>
-<?import javafx.scene.control.TableColumn?>
-<?import javafx.scene.control.TableView?>
-<?import javafx.scene.control.TextField?>
-<?import javafx.scene.layout.HBox?>
-<?import javafx.scene.layout.VBox?>
-
-<VBox maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minHeight="0.0" minWidth="0.0" spacing="16.0" stylesheets="@../css/main.css" VBox.vgrow="ALWAYS" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.engrisk.controllers.AttendanceTableController">
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<VBox xmlns:fx="http://javafx.com/fxml/1" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minHeight="0.0" minWidth="0.0"
+      spacing="16.0" stylesheets="@../css/main.css" VBox.vgrow="ALWAYS"
+      xmlns="http://javafx.com/javafx/17" fx:controller="com.engrisk.controllers.AttendanceTableController">
     <padding>
-        <Insets bottom="16.0" left="16.0" right="16.0" top="16.0" />
+        <Insets bottom="16.0" left="16.0" right="16.0" top="16.0"/>
     </padding>
     <HBox maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" spacing="16.0" VBox.vgrow="NEVER">
         <HBox HBox.hgrow="ALWAYS">
-            <Button mnemonicParsing="false" onAction="#onEditClick" text="Sửa điểm" />
+            <Button mnemonicParsing="false" onAction="#onEditClick" text="Sửa điểm"/>
         </HBox>
-        <TextField fx:id="nameTextField" maxWidth="200.0" promptText="Nhập tên" HBox.hgrow="ALWAYS" />
-      <TextField fx:id="phoneTextField" layoutX="681.0" layoutY="10.0" maxWidth="200.0" promptText="Nhập số điện thoại" HBox.hgrow="ALWAYS" />
-        <Button fx:id="searchButton" mnemonicParsing="false" onAction="#onSearchSubmit" text="Tìm kiếm" />
+        <TextField fx:id="nameTextField" maxWidth="200.0" promptText="Nhập tên" HBox.hgrow="ALWAYS"/>
+        <TextField fx:id="phoneTextField" layoutX="681.0" layoutY="10.0" maxWidth="200.0"
+                   promptText="Nhập số điện thoại" HBox.hgrow="ALWAYS"/>
+        <Button fx:id="searchButton" mnemonicParsing="false" onAction="#onSearchSubmit" text="Tìm kiếm"/>
     </HBox>
-    <TableView fx:id="table" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minHeight="0.0" minWidth="0.0" VBox.vgrow="ALWAYS">
+    <TableView fx:id="table" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minHeight="0.0"
+               minWidth="0.0" VBox.vgrow="ALWAYS">
         <columns>
-            <TableColumn fx:id="candidateCodeColumn" editable="false" minWidth="100.0" prefWidth="-1.0" text="Số báo danh" />
-            <TableColumn fx:id="candidateNameColumn" editable="false" minWidth="100.0" prefWidth="-1.0" text="Họ tên" />
-            <TableColumn fx:id="candidatePhoneColumn" editable="false" minWidth="100.0" prefWidth="-1.0" text="Số điện thoại" />
-            <TableColumn fx:id="examNameColumn" editable="false" minWidth="100.0" prefWidth="-1.0" text="Khóa thi" />
-            <TableColumn fx:id="examTypeColumn" editable="false" minWidth="100.0" prefWidth="-1.0" text="Trình độ" />
-            <TableColumn fx:id="examDateColumn" editable="false" minWidth="100.0" prefWidth="-1.0" text="Ngày thi" />
-            <TableColumn fx:id="listeningColumn" editable="false" minWidth="100.0" prefWidth="-1.0" text="Nghe" />
-            <TableColumn fx:id="speakingColumn" editable="false" minWidth="100.0" prefWidth="-1.0" text="Nói" />
-            <TableColumn fx:id="readingColumn" editable="false" minWidth="100.0" prefWidth="-1.0" text="Đọc" />
-            <TableColumn fx:id="writingColumn" editable="false" minWidth="100.0" prefWidth="-1.0" text="Viết" />
+            <TableColumn fx:id="candidateCodeColumn" editable="false" minWidth="100.0" prefWidth="-1.0"
+                         text="Số báo danh"/>
+            <TableColumn fx:id="candidateNameColumn" editable="false" minWidth="100.0" prefWidth="-1.0" text="Họ tên"/>
+            <TableColumn fx:id="candidatePhoneColumn" editable="false" minWidth="100.0" prefWidth="-1.0"
+                         text="Số điện thoại"/>
+            <TableColumn fx:id="examNameColumn" editable="false" minWidth="100.0" prefWidth="-1.0" text="Khóa thi"/>
+            <TableColumn fx:id="examTypeColumn" editable="false" minWidth="100.0" prefWidth="-1.0" text="Trình độ"/>
+            <TableColumn fx:id="examDateColumn" editable="false" minWidth="100.0" prefWidth="-1.0" text="Ngày thi"/>
+            <TableColumn fx:id="listeningColumn" editable="false" minWidth="100.0" prefWidth="-1.0" text="Nghe"/>
+            <TableColumn fx:id="speakingColumn" editable="false" minWidth="100.0" prefWidth="-1.0" text="Nói"/>
+            <TableColumn fx:id="readingColumn" editable="false" minWidth="100.0" prefWidth="-1.0" text="Đọc"/>
+            <TableColumn fx:id="writingColumn" editable="false" minWidth="100.0" prefWidth="-1.0" text="Viết"/>
         </columns>
     </TableView>
 </VBox>

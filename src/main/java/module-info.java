@@ -6,8 +6,9 @@ module com.engrisk.engrisk {
     requires spring.context;
     requires unirest.java;
     requires com.google.gson;
-    requires json.simple;
     requires com.fasterxml.jackson.annotation;
+    requires com.fasterxml.jackson.databind;
+    requires org.json;
 
 
     exports com.engrisk;

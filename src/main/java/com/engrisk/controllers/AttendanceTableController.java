@@ -9,7 +9,10 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
-import javafx.scene.control.*;
+import javafx.scene.control.Button;
+import javafx.scene.control.TableColumn;
+import javafx.scene.control.TableView;
+import javafx.scene.control.TextField;
 import javafx.scene.input.KeyCode;
 
 import java.net.URL;
@@ -33,13 +36,10 @@ public class AttendanceTableController implements Initializable {
             speakingColumn,
             readingColumn,
             writingColumn;
-
-    @FXML
-    TextField nameTextField, phoneTextField;
-
     @FXML
     public Button searchButton;
-
+    @FXML
+    TextField nameTextField, phoneTextField;
     // Data got from server
     ArrayList<Attendance> data = new ArrayList<>();
 
@@ -73,8 +73,8 @@ public class AttendanceTableController implements Initializable {
         };
 
         filteredData.setAll(data.stream()
-                                .filter(predicate)
-                                .collect(Collectors.toList()));
+                .filter(predicate)
+                .collect(Collectors.toList()));
     }
 
     @FXML

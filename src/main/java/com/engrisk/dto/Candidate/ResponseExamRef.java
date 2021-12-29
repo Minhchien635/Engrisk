@@ -1,7 +1,7 @@
 package com.engrisk.dto.Candidate;
 
-import com.engrisk.models.Exam;
 import com.engrisk.enums.ExamType;
+import com.engrisk.models.Exam;
 import lombok.Data;
 import org.modelmapper.ModelMapper;
 import org.springframework.format.annotation.DateTimeFormat;

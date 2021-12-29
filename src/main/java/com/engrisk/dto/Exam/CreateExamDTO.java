@@ -12,7 +12,6 @@ import java.util.Date;
 @AllArgsConstructor
 @NoArgsConstructor
 public class CreateExamDTO {
-
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm")
     public Date examDate;
 

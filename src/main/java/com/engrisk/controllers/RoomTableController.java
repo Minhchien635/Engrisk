@@ -1,6 +1,5 @@
 package com.engrisk.controllers;
 
-import com.engrisk.models.Exam;
 import com.engrisk.models.Room;
 import com.engrisk.utils.DateUtils;
 import javafx.beans.property.SimpleStringProperty;

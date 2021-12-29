@@ -1,5 +1,7 @@
 package com.engrisk.controllers;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.mashape.unirest.http.exceptions.UnirestException;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
@@ -20,7 +22,7 @@ public abstract class BaseTableController implements Initializable {
     public abstract void initTable();
 
     // Load data for table
-    public abstract void loadData();
+    public abstract void loadData() throws UnirestException, JsonProcessingException;
 
     public abstract void onSearchListener();
 
@@ -36,7 +38,13 @@ public abstract class BaseTableController implements Initializable {
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
         initTable();
-        loadData();
+        try {
+            loadData();
+        } catch (UnirestException e) {
+            e.printStackTrace();
+        } catch (JsonProcessingException e) {
+            e.printStackTrace();
+        }
         onSearchListener();
     }
 }

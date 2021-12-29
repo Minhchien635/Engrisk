@@ -1,5 +1,6 @@
 package com.engrisk.controllers;
 
+import com.engrisk.api.CallApi;
 import com.engrisk.dto.Exam.CreateExamDTO;
 import com.engrisk.enums.ExamType;
 import com.engrisk.models.Exam;
@@ -7,7 +8,8 @@ import com.engrisk.utils.AlertUtils;
 import com.engrisk.utils.DateUtils;
 import com.engrisk.utils.NumberUtils;
 import com.engrisk.utils.PriceFormatter;
-import com.google.gson.Gson;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.mashape.unirest.http.exceptions.UnirestException;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -15,15 +17,19 @@ import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import javafx.util.Callback;
-import org.json.simple.parser.ParseException;
 
 import java.net.URL;
-import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.util.Date;
 import java.util.ResourceBundle;
 
 public class ExamFormController extends BaseFormController {
+
+    public Exam exam = new Exam();
+
+    public ExamTableController examTableController;
+
+    ObservableList<ExamType> examTypes = FXCollections.observableArrayList();
 
     @FXML
     private TextField nameTextField, priceTextField;
@@ -34,12 +40,8 @@ public class ExamFormController extends BaseFormController {
     @FXML
     private DatePicker examDatePicker;
 
-    public Exam exam = new Exam();
-
-    ObservableList<ExamType> examTypes = FXCollections.observableArrayList();
-
     @Override
-    public void onSaveClick(ActionEvent event) throws UnirestException, ParseException {
+    public void onSaveClick(ActionEvent event) throws JsonProcessingException, UnirestException {
         String name = nameTextField.getText();
         if (name.trim().isEmpty()) {
             AlertUtils.showWarning("Hãy nhập tên khóa thi");
@@ -76,17 +78,12 @@ public class ExamFormController extends BaseFormController {
         examDTO.setPrice(Long.valueOf(price));
         examDTO.setExamDate(DateUtils.parseDate(examDatePicker.getValue()));
 
-        //{
-        //  "examDate": "2022-1-20 07:00",
-        //  "name": "dfsdfsd",
-        //  "price": 0,
-        //  "type": "A2"
-        //}
-        System.out.println(examDTO.getExamDate());
-        //"examDate":"Dec 29, 2021, 2:27:29 PM"
-        Gson gson = new Gson();
+        ObjectMapper mapper = new ObjectMapper();
+        String request = mapper.writeValueAsString(examDTO);
+        CallApi.post("exam", request);
 
-        System.out.println(gson.toJson(examDTO));
+        examTableController.loadData();
+        closeWindow(event);
     }
 
     public void initTypeComboBox() {
