@@ -4,6 +4,10 @@ module com.engrisk.engrisk {
     requires lombok;
     requires modelmapper;
     requires spring.context;
+    requires unirest.java;
+    requires com.google.gson;
+    requires json.simple;
+    requires com.fasterxml.jackson.annotation;
 
 
     exports com.engrisk;
@@ -17,6 +21,10 @@ module com.engrisk.engrisk {
 
     exports com.engrisk.dto;
     opens com.engrisk.dto to javafx.fxml;
+    opens com.engrisk.dto.Exam;
+    opens com.engrisk.dto.Attendance;
+    opens com.engrisk.dto.Candidate;
+    opens com.engrisk.dto.Room;
 
     exports com.engrisk.utils;
     opens com.engrisk.utils to javafx.fxml;

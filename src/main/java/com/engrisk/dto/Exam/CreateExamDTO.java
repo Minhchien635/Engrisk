@@ -1,6 +1,7 @@
 package com.engrisk.dto.Exam;
 
 import com.engrisk.enums.ExamType;
+import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -11,11 +12,13 @@ import java.util.Date;
 @AllArgsConstructor
 @NoArgsConstructor
 public class CreateExamDTO {
-    private Date examDate;
 
-    private ExamType type;
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm")
+    public Date examDate;
 
-    private String name;
+    public ExamType type;
 
-    private Long price;
+    public String name;
+
+    public Long price;
 }

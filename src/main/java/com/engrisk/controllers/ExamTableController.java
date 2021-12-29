@@ -4,14 +4,17 @@ import com.engrisk.models.Exam;
 import com.engrisk.utils.AlertUtils;
 import com.engrisk.utils.DateUtils;
 import com.engrisk.utils.PriceFormatter;
+import com.engrisk.utils.StageBuilder;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 
+import java.io.IOException;
 import java.net.URL;
 import java.util.ResourceBundle;
 
@@ -26,17 +29,22 @@ public class ExamTableController implements Initializable {
     ObservableList<Exam> data = FXCollections.observableArrayList();
 
     @FXML
-    public void onCreateClick() {
-        // Open create exam view
+    public void onCreateClick(ActionEvent event) throws IOException {
+        ExamFormController controller = new ExamFormController();
+
+        new StageBuilder("exam_form", controller, "Tạo khóa thi")
+                .setModalOwner(event)
+                .build()
+                .showAndWait();
     }
 
     @FXML
-    public void onEditClick() {
+    public void onEditClick(ActionEvent event) {
         // Open edit exam view
     }
 
     @FXML
-    public void onDeleteClick() {
+    public void onDeleteClick(ActionEvent event) {
         Exam selected = table.getSelectionModel().getSelectedItem();
 
         if (selected == null) {
