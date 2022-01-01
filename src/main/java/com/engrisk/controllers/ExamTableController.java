@@ -89,7 +89,7 @@ public class ExamTableController extends BaseTableController {
     public void loadData() throws UnirestException, JsonProcessingException {
         ResponseExamDTO[] responseExamDTOs;
         String response = CallApi.get("exam");
-        if( response.equals("[]"))
+        if (response.equals("[]"))
             return;
         ObjectMapper mapper = new ObjectMapper();
         responseExamDTOs = mapper.readValue(response, ResponseExamDTO[].class);

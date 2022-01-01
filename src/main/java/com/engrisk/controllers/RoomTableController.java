@@ -2,7 +2,6 @@ package com.engrisk.controllers;
 
 import com.engrisk.api.CallApi;
 import com.engrisk.dto.Room.ResponseRoomDTO;
-import com.engrisk.models.Room;
 import com.engrisk.utils.DateUtils;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;

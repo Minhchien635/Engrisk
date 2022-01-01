@@ -5,7 +5,6 @@ import com.engrisk.models.Candidate;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.Data;
 import org.modelmapper.ModelMapper;
-import org.springframework.format.annotation.DateTimeFormat;
 
 import java.util.Date;
 

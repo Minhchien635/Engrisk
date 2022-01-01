@@ -200,7 +200,7 @@ public class CandidateTableController extends BaseTableController {
         String response = CallApi.get("candidate");
         ArrayList<Candidate> candidates = new ArrayList<>();
 
-        if (!response.equals("[]")){
+        if (!response.equals("[]")) {
             ObjectMapper mapper = new ObjectMapper();
             responseCandidateDTOs = mapper.readValue(response, ResponseCandidateDTO[].class);
 

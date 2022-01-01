@@ -1,15 +1,10 @@
 package com.engrisk.controllers;
 
-import com.engrisk.api.CallApi;
-import com.engrisk.dto.Candidate.ResponseCandidateDTO;
-import com.engrisk.dto.Exam.ResponseCandidateRef;
-import com.engrisk.dto.Exam.ResponseExamDTO;
 import com.engrisk.models.Attendance;
 import com.engrisk.models.Candidate;
 import com.engrisk.utils.AlertUtils;
 import com.engrisk.utils.DateUtils;
 import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.mashape.unirest.http.exceptions.UnirestException;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;

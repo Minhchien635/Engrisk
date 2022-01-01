@@ -1,54 +1,51 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import javafx.scene.control.Button?>
-<?import javafx.scene.control.Label?>
-<?import javafx.scene.control.TableColumn?>
-<?import javafx.scene.control.TableView?>
-<?import javafx.scene.control.TextField?>
+
+<?import javafx.scene.control.*?>
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
-
-
-<VBox maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="591.0" prefWidth="714.0" style="-fx-padding: 10;" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1">
-   <children>
-      <VBox prefHeight="209.0" prefWidth="694.0">
-         <children>
-            <Label prefHeight="40.0" prefWidth="112.0" text="Tên phòng">
-               <font>
-                  <Font size="21.0" />
-               </font>
-            </Label>
-            <TextField fx:id="nameTextField" prefHeight="40.0" prefWidth="714.0" />
-         </children>
-      </VBox>
-      <VBox prefHeight="598.0" prefWidth="694.0">
-         <children>
-            <HBox alignment="CENTER_LEFT" prefHeight="46.0" prefWidth="694.0">
-               <children>
-                  <Label prefHeight="26.0" prefWidth="559.0" text="Thí sinh">
-                     <font>
-                        <Font size="21.0" />
-                     </font>
-                  </Label>
-                  <Button mnemonicParsing="false" text="Nhập điểm">
-                     <font>
-                        <Font size="20.0" />
-                     </font>
-                  </Button>
-               </children>
-            </HBox>
-            <TableView prefHeight="444.0" prefWidth="694.0">
-              <columns>
-                <TableColumn prefWidth="75.0" text="SBD" />
-                <TableColumn prefWidth="75.0" text="Họ và tên" />
-                  <TableColumn prefWidth="75.0" text="Nghe" />
-                  <TableColumn prefWidth="75.0" text="Nói" />
-                  <TableColumn prefWidth="75.0" text="Đọc" />
-                  <TableColumn prefWidth="75.0" text="Viết" />
-              </columns>
-            </TableView>
-         </children>
-      </VBox>
-   </children>
+<VBox xmlns:fx="http://javafx.com/fxml/1" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity"
+      prefHeight="591.0" prefWidth="714.0" style="-fx-padding: 10;"
+      xmlns="http://javafx.com/javafx/17">
+    <children>
+        <VBox prefHeight="209.0" prefWidth="694.0">
+            <children>
+                <Label prefHeight="40.0" prefWidth="112.0" text="Tên phòng">
+                    <font>
+                        <Font size="21.0"/>
+                    </font>
+                </Label>
+                <TextField fx:id="nameTextField" prefHeight="40.0" prefWidth="714.0"/>
+            </children>
+        </VBox>
+        <VBox prefHeight="598.0" prefWidth="694.0">
+            <children>
+                <HBox alignment="CENTER_LEFT" prefHeight="46.0" prefWidth="694.0">
+                    <children>
+                        <Label prefHeight="26.0" prefWidth="559.0" text="Thí sinh">
+                            <font>
+                                <Font size="21.0"/>
+                            </font>
+                        </Label>
+                        <Button mnemonicParsing="false" text="Nhập điểm">
+                            <font>
+                                <Font size="20.0"/>
+                            </font>
+                        </Button>
+                    </children>
+                </HBox>
+                <TableView prefHeight="444.0" prefWidth="694.0">
+                    <columns>
+                        <TableColumn prefWidth="75.0" text="SBD"/>
+                        <TableColumn prefWidth="75.0" text="Họ và tên"/>
+                        <TableColumn prefWidth="75.0" text="Nghe"/>
+                        <TableColumn prefWidth="75.0" text="Nói"/>
+                        <TableColumn prefWidth="75.0" text="Đọc"/>
+                        <TableColumn prefWidth="75.0" text="Viết"/>
+                    </columns>
+                </TableView>
+            </children>
+        </VBox>
+    </children>
 </VBox>
