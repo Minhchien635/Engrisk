@@ -2,6 +2,7 @@ package com.engrisk.dto.Exam;
 
 import com.engrisk.enums.SexType;
 import com.engrisk.models.Candidate;
+import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.Data;
 import org.modelmapper.ModelMapper;
 import org.springframework.format.annotation.DateTimeFormat;
@@ -12,10 +13,10 @@ import java.util.Date;
 public class ResponseCandidateRef {
     private Long id;
 
-    @DateTimeFormat(pattern = "yyyy-MM-dd")
+    @JsonFormat(pattern = "yyyy-MM-dd")
     private Date birthDate;
 
-    @DateTimeFormat(pattern = "yyyy-MM-dd")
+    @JsonFormat(pattern = "yyyy-MM-dd")
     private Date citizenIdDate;
 
     private SexType sex;

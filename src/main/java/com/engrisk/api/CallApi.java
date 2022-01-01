@@ -31,8 +31,8 @@ public class CallApi {
         return apiResponse.getBody().getObject();
     }
 
-    public static JSONObject put(String route, JsonNode dto) throws UnirestException {
-        HttpResponse<JsonNode> apiResponse = Unirest.post(URL + route)
+    public static JSONObject put(String route, String dto) throws UnirestException {
+        HttpResponse<JsonNode> apiResponse = Unirest.put(URL + route)
                 .header("accept", "application/json")
                 .header("content-type", "application/json")
                 .body(dto)
@@ -41,7 +41,7 @@ public class CallApi {
     }
 
     public static JSONObject delete(String route, String id) throws UnirestException {
-        HttpResponse<JsonNode> apiResponse = Unirest.post(URL + route)
+        HttpResponse<JsonNode> apiResponse = Unirest.delete(URL + route)
                 .routeParam("id", id)
                 .asJson();
         return apiResponse.getBody().getObject();

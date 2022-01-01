@@ -1,9 +1,16 @@
 package com.engrisk.controllers;
 
+import com.engrisk.api.CallApi;
+import com.engrisk.dto.Candidate.ResponseCandidateDTO;
+import com.engrisk.dto.Exam.ResponseCandidateRef;
+import com.engrisk.dto.Exam.ResponseExamDTO;
 import com.engrisk.models.Attendance;
 import com.engrisk.models.Candidate;
 import com.engrisk.utils.AlertUtils;
 import com.engrisk.utils.DateUtils;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.mashape.unirest.http.exceptions.UnirestException;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -40,6 +47,7 @@ public class AttendanceTableController implements Initializable {
     public Button searchButton;
     @FXML
     TextField nameTextField, phoneTextField;
+
     // Data got from server
     ArrayList<Attendance> data = new ArrayList<>();
 
@@ -168,7 +176,7 @@ public class AttendanceTableController implements Initializable {
         });
     }
 
-    public void initData() {
+    public void initData() throws UnirestException, JsonProcessingException {
         // Get data from server and set to data array and filtered data
     }
 
@@ -176,6 +184,12 @@ public class AttendanceTableController implements Initializable {
     public void initialize(URL url, ResourceBundle resourceBundle) {
         initTable();
         initSearchTextFields();
-        initData();
+        try {
+            initData();
+        } catch (UnirestException e) {
+            e.printStackTrace();
+        } catch (JsonProcessingException e) {
+            e.printStackTrace();
+        }
     }
 }

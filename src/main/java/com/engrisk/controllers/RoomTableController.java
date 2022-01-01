@@ -1,7 +1,12 @@
 package com.engrisk.controllers;
 
+import com.engrisk.api.CallApi;
+import com.engrisk.dto.Room.ResponseRoomDTO;
 import com.engrisk.models.Room;
 import com.engrisk.utils.DateUtils;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.mashape.unirest.http.exceptions.UnirestException;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -15,15 +20,16 @@ import java.util.ResourceBundle;
 
 public class RoomTableController implements Initializable {
     @FXML
-    public TableView<Room> table;
+    public TableView<ResponseRoomDTO> table;
 
     @FXML
-    public TableColumn<Room, String> examNameColumn, examDateColumn, examTypeColumn, roomNameColumn;
+    public TableColumn<ResponseRoomDTO, String> examNameColumn, examDateColumn, examTypeColumn, roomNameColumn;
 
     // Data got from server
-    ObservableList<Room> data = FXCollections.observableArrayList();
+    ObservableList<ResponseRoomDTO> data = FXCollections.observableArrayList();
 
     public void initTable() {
+
         examNameColumn.setCellValueFactory(cell -> {
             SimpleStringProperty property = new SimpleStringProperty();
             property.setValue(cell.getValue().getExam().getName());
@@ -51,13 +57,25 @@ public class RoomTableController implements Initializable {
         table.setItems(data);
     }
 
-    public void initData() {
-        // Get data from api
+    public void initData() throws UnirestException, JsonProcessingException {
+        ResponseRoomDTO[] responseRoomDTOs;
+        String response = CallApi.get("room");
+        ObjectMapper mapper = new ObjectMapper();
+        responseRoomDTOs = mapper.readValue(response, ResponseRoomDTO[].class);
+
+        data.setAll(responseRoomDTOs);
+        table.refresh();
     }
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
         initTable();
-        initData();
+        try {
+            initData();
+        } catch (UnirestException e) {
+            e.printStackTrace();
+        } catch (JsonProcessingException e) {
+            e.printStackTrace();
+        }
     }
 }

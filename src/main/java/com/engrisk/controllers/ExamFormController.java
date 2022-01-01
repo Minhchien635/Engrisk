@@ -2,8 +2,9 @@ package com.engrisk.controllers;
 
 import com.engrisk.api.CallApi;
 import com.engrisk.dto.Exam.CreateExamDTO;
+import com.engrisk.dto.Exam.ResponseExamDTO;
+import com.engrisk.dto.Exam.UpdateExamDTO;
 import com.engrisk.enums.ExamType;
-import com.engrisk.models.Exam;
 import com.engrisk.utils.AlertUtils;
 import com.engrisk.utils.DateUtils;
 import com.engrisk.utils.NumberUtils;
@@ -25,7 +26,7 @@ import java.util.ResourceBundle;
 
 public class ExamFormController extends BaseFormController {
 
-    public Exam exam = new Exam();
+    public ResponseExamDTO exam = new ResponseExamDTO();
 
     public ExamTableController examTableController;
 
@@ -65,10 +66,34 @@ public class ExamFormController extends BaseFormController {
             return;
         }
 
-        Date dateCurr = new Date();
         LocalDate dateExam = examDatePicker.getValue();
+        if (dateExam == null) {
+            AlertUtils.showWarning("Hãy chọn ngày thi");
+            return;
+        }
+
+        Date dateCurr = new Date();
         if (DateUtils.parseDate(dateExam).before(dateCurr)) {
             AlertUtils.showWarning("Ngày thi phải sau ngày tạo khóa thi");
+            return;
+        }
+
+        if (exam.getId() != null) {
+            UpdateExamDTO examDTO = new UpdateExamDTO();
+            examDTO.setId(exam.getId());
+            examDTO.setName(name);
+            examDTO.setType(type);
+            examDTO.setPrice(Long.valueOf(price));
+            examDTO.setExamDate(DateUtils.parseDate(examDatePicker.getValue()));
+
+            ObjectMapper mapper = new ObjectMapper();
+            String request = mapper.writeValueAsString(examDTO);
+            CallApi.put("exam", request);
+            System.out.println(request);
+
+            examTableController.loadData();
+            closeWindow(event);
+
             return;
         }
 
@@ -87,14 +112,13 @@ public class ExamFormController extends BaseFormController {
     }
 
     public void initTypeComboBox() {
-        Callback<ListView<ExamType>, ListCell<ExamType>> factory = (lv) ->
-                new ListCell<>() {
-                    @Override
-                    protected void updateItem(ExamType item, boolean empty) {
-                        super.updateItem(item, empty);
-                        setText(empty ? "" : item.name());
-                    }
-                };
+        Callback<ListView<ExamType>, ListCell<ExamType>> factory = (lv) -> new ListCell<>() {
+            @Override
+            protected void updateItem(ExamType item, boolean empty) {
+                super.updateItem(item, empty);
+                setText(empty ? "" : item.name());
+            }
+        };
         typeComboBox.setCellFactory(factory);
 
         typeComboBox.setButtonCell(factory.call(null));
@@ -116,7 +140,8 @@ public class ExamFormController extends BaseFormController {
     public void initFormValues() {
         nameTextField.setText(exam.getName());
         typeComboBox.setItems(examTypes);
-        priceTextField.setText(PriceFormatter.format(exam.getPrice()));
+        typeComboBox.setValue(exam.type);
+        priceTextField.setText(exam.getPrice().toString());
         examDatePicker.setValue(DateUtils.parseLocalDate(exam.getExamDate()));
     }
 

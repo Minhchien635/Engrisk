@@ -5,6 +5,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
+import org.springframework.format.annotation.DateTimeFormat;
 
 import java.util.Date;
 import java.util.List;
@@ -22,6 +23,7 @@ public class Exam {
     @ToString.Exclude
     private List<Attendance> attendances;
 
+    @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm")
     private Date examDate;
 
     private ExamType type;

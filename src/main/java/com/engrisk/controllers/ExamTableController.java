@@ -15,6 +15,7 @@ import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.TableColumn;
+import javafx.scene.control.TableRow;
 import javafx.scene.control.TableView;
 
 import java.io.IOException;
@@ -36,7 +37,7 @@ public class ExamTableController extends BaseTableController {
         ExamFormController controller = new ExamFormController();
         controller.examTableController = this;
 
-        new StageBuilder("exam_form", controller, "Tạo khóa thi")
+        new StageBuilder("exam_form", controller, "Thêm khóa thi")
                 .setModalOwner(event)
                 .setDimensionsAuto()
                 .build()
@@ -44,8 +45,23 @@ public class ExamTableController extends BaseTableController {
     }
 
     @FXML
-    public void onEditClick(ActionEvent event) {
-        // Open edit exam view
+    public void onEditClick(ActionEvent event) throws IOException {
+        ResponseExamDTO exam = table.getSelectionModel().getSelectedItem();
+
+        if (exam == null) {
+            AlertUtils.showWarning("Hãy chọn khóa thi để sửa");
+            return;
+        }
+
+        ExamFormController controller = new ExamFormController();
+        controller.examTableController = this;
+        controller.exam = exam;
+
+        new StageBuilder("exam_form", controller, "Sửa khóa thi")
+                .setModalOwner(event)
+                .setDimensionsAuto()
+                .build()
+                .showAndWait();
     }
 
     @FXML
@@ -60,6 +76,9 @@ public class ExamTableController extends BaseTableController {
         try {
             // Call delete api with exam id
             long id = selected.getId();
+            CallApi.delete("exam/{id}", String.valueOf(id));
+
+            loadData();
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -70,6 +89,8 @@ public class ExamTableController extends BaseTableController {
     public void loadData() throws UnirestException, JsonProcessingException {
         ResponseExamDTO[] responseExamDTOs;
         String response = CallApi.get("exam");
+        if( response.equals("[]"))
+            return;
         ObjectMapper mapper = new ObjectMapper();
         responseExamDTOs = mapper.readValue(response, ResponseExamDTO[].class);
 
@@ -83,6 +104,37 @@ public class ExamTableController extends BaseTableController {
     }
 
     public void initTable() {
+
+        // On row double click
+        table.setRowFactory(tv -> {
+            TableRow<ResponseExamDTO> row = new TableRow<>();
+
+            row.setOnMouseClicked(event -> {
+                if (event.getClickCount() == 2 && (!row.isEmpty())) {
+                    ResponseExamDTO tour = row.getItem();
+
+                    try {
+                        // Init controller
+                        ExamFormController controller = new ExamFormController();
+                        controller.examTableController = this;
+                        controller.exam = tour;
+                        controller.read_only = true;
+
+                        // Show modal
+                        new StageBuilder("exam_form", controller, "Chi tiết khóa thi")
+                                .setModalOwner(event)
+                                .setDimensionsAuto()
+                                .build()
+                                .showAndWait();
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                }
+            });
+
+            return row;
+        });
+
         nameColumn.setCellValueFactory(cell -> {
             SimpleStringProperty property = new SimpleStringProperty();
             property.setValue(cell.getValue().getName());
@@ -110,14 +162,9 @@ public class ExamTableController extends BaseTableController {
         table.setItems(data);
     }
 
-    public void initData() {
-        // Get data from server and set to observable list
-    }
-
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
         initTable();
-        initData();
         try {
             loadData();
         } catch (UnirestException | JsonProcessingException e) {
