@@ -15,10 +15,10 @@
                         <Font size="21.0"/>
                     </font>
                 </Label>
-                <TextField fx:id="nameTextField" prefHeight="40.0" prefWidth="714.0"/>
+                <TextField fx:id="nameTextField" prefHeight="34.0" prefWidth="694.0"/>
             </children>
         </VBox>
-        <VBox prefHeight="573.0" prefWidth="694.0">
+        <VBox prefHeight="643.0" prefWidth="694.0">
             <children>
                 <HBox alignment="CENTER_LEFT" prefHeight="46.0" prefWidth="694.0">
                     <children>
@@ -30,14 +30,14 @@
                         <Button mnemonicParsing="false" onAction="#onAddCoreClick" text="Nhập điểm"/>
                     </children>
                 </HBox>
-                <TableView fx:id="tableAttendance" prefHeight="414.0" prefWidth="694.0">
+                <TableView fx:id="tableAttendance" prefHeight="451.0" prefWidth="694.0">
                     <columns>
                         <TableColumn fx:id="idColumn" prefWidth="75.0" text="SBD"/>
-                        <TableColumn fx:id="nameColumn" prefWidth="75.0" text="Họ và tên"/>
-                        <TableColumn fx:id="listenColumn" prefWidth="75.0" text="Nghe"/>
-                        <TableColumn fx:id="speakColumn" prefWidth="75.0" text="Nói"/>
-                        <TableColumn fx:id="readColumn" prefWidth="75.0" text="Đọc"/>
-                        <TableColumn fx:id="writeColumn" prefWidth="75.0" text="Viết"/>
+                        <TableColumn fx:id="nameColumn" prefWidth="298.0" text="Họ và tên"/>
+                        <TableColumn fx:id="listenColumn" minWidth="0.0" prefWidth="83.0" text="Nghe"/>
+                        <TableColumn fx:id="speakColumn" prefWidth="82.0" text="Nói"/>
+                        <TableColumn fx:id="readColumn" prefWidth="79.0" text="Đọc"/>
+                        <TableColumn fx:id="writeColumn" prefWidth="76.0" text="Viết"/>
                     </columns>
                 </TableView>
             </children>

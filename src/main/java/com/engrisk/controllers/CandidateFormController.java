@@ -150,30 +150,25 @@ public class CandidateFormController extends BaseFormController {
             @Override
             protected void updateItem(SexType item, boolean empty) {
                 super.updateItem(item, empty);
-                setText(empty ? "" : item.name());
+                setText(empty ? "" : switch (item.name()) {
+                    case "MALE" -> "Nam";
+                    case "FEMALE" -> "Nữ";
+                    case "OTHER" -> "Khác";
+                    default -> "";
+                });
             }
         };
         sexTypeComboBox.setCellFactory(factory);
 
         sexTypeComboBox.setButtonCell(factory.call(null));
 
-        sexTypes.setAll(SexType.MALE, SexType.FEMALE, SexType.OTHER);
+        sexTypes.addAll(SexType.MALE, SexType.FEMALE, SexType.OTHER);
 
         sexTypeComboBox.setItems(sexTypes);
     }
 
     @Override
     public void initReadOnly() {
-        nameTextField.setEditable(false);
-        birthDateDatePicker.setDisable(true);
-        sexTypeComboBox.setDisable(true);
-        birthPlaceTextField.setEditable(false);
-        citizenIdTextField.setEditable(false);
-        citizenIdDateDatePicker.setDisable(true);
-        citizenIdPlaceTextField.setEditable(false);
-        emailTextField.setEditable(false);
-        phoneTextField.setEditable(false);
-        saveButton.setManaged(false);
     }
 
     @Override
@@ -195,10 +190,6 @@ public class CandidateFormController extends BaseFormController {
 
         if (candidate.getId() != null) {
             initFormValues();
-        }
-
-        if (read_only) {
-            initReadOnly();
         }
     }
 }

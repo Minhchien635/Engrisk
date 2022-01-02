@@ -3,8 +3,7 @@
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
-<VBox xmlns:fx="http://javafx.com/fxml/1" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308"
-      minHeight="0.0" minWidth="0.0"
+<VBox xmlns:fx="http://javafx.com/fxml/1" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minHeight="0.0" minWidth="0.0"
       spacing="16.0" stylesheets="@../css/main.css" VBox.vgrow="ALWAYS"
       xmlns="http://javafx.com/javafx/17" fx:controller="com.engrisk.controllers.CandidateTableController">
     <padding>
@@ -12,11 +11,9 @@
     </padding>
     <HBox maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" spacing="16.0" VBox.vgrow="NEVER">
         <Button mnemonicParsing="false" onAction="#onCreateClick" text="Thêm"/>
-        <Button mnemonicParsing="false" onAction="#onEditClick" text="Sửa"/>
         <Button mnemonicParsing="false" onAction="#onDeleteClick" text="Xóa"/>
     </HBox>
-    <TableView fx:id="table" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minHeight="0.0"
-               minWidth="0.0" VBox.vgrow="ALWAYS">
+    <TableView fx:id="table" VBox.vgrow="ALWAYS">
         <columns>
             <TableColumn fx:id="nameColumn" editable="false" minWidth="100.0" prefWidth="-1.0" text="Họ tên"/>
             <TableColumn fx:id="genderColumn" editable="false" minWidth="100.0" prefWidth="-1.0" text="Giới tính"/>

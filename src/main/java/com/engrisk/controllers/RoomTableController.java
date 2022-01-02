@@ -2,6 +2,7 @@ package com.engrisk.controllers;
 
 import com.engrisk.api.CallApi;
 import com.engrisk.dto.Room.ResponseRoomDTO;
+import com.engrisk.models.Room;
 import com.engrisk.utils.DateUtils;
 import com.engrisk.utils.StageBuilder;
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -38,13 +39,14 @@ public class RoomTableController implements Initializable {
 
             row.setOnMouseClicked(event -> {
                 if (event.getClickCount() == 2 && (!row.isEmpty())) {
-                    ResponseRoomDTO room = row.getItem();
+                    ResponseRoomDTO selected = row.getItem();
+                    Room room = new Room();
+                    room.setName(selected.getName());
 
                     try {
                         // Init controller
                         RoomFormController controller = new RoomFormController();
                         controller.room = room;
-                        controller.roomTableController = this;
 
                         // Show modal
                         new StageBuilder("room_form", controller, "Chi tiết phòng thi")

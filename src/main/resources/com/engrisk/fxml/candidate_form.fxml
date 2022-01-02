@@ -2,7 +2,8 @@
 
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
-<VBox xmlns:fx="http://javafx.com/fxml/1" fx:id="formInfoVbox" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity"
+<VBox xmlns:fx="http://javafx.com/fxml/1" fx:id="formInfoVbox" maxHeight="-Infinity" maxWidth="-Infinity"
+      minHeight="-Infinity"
       minWidth="-Infinity" nodeOrientation="LEFT_TO_RIGHT" prefHeight="601.0" prefWidth="422.0"
       style="-fx-padding: 10;" xmlns="http://javafx.com/javafx/17">
     <children>

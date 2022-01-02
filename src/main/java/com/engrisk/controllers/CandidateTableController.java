@@ -55,22 +55,6 @@ public class CandidateTableController extends BaseTableController {
 
     @Override
     public void onEditClick(ActionEvent e) throws Exception {
-        Candidate candidate = table.getSelectionModel().getSelectedItem();
-
-        if (candidate == null) {
-            AlertUtils.showWarning("Hãy chọn khóa thi để sửa");
-            return;
-        }
-
-        CandidateFormController controller = new CandidateFormController();
-        controller.candidateTableController = this;
-        controller.candidate = candidate;
-
-        new StageBuilder("candidate_form", controller, "Sửa khóa thi")
-                .setModalOwner(e)
-                .setDimensionsAuto()
-                .build()
-                .showAndWait();
     }
 
     @Override
@@ -107,7 +91,6 @@ public class CandidateTableController extends BaseTableController {
                         CandidateFormController controller = new CandidateFormController();
                         controller.candidateTableController = this;
                         controller.candidate = candidate;
-                        controller.read_only = true;
 
                         // Show modal
                         new StageBuilder("candidate_form", controller, "Chi tiết khóa thi")

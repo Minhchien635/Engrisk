@@ -3,7 +3,7 @@ package com.engrisk.controllers;
 import com.engrisk.api.CallApi;
 import com.engrisk.dto.Attendance.ResponseAttendanceDTO;
 import com.engrisk.dto.Attendance.UpdateAttendanceResultDTO;
-import com.engrisk.dto.Room.ResponseRoomDTO;
+import com.engrisk.models.Room;
 import com.engrisk.utils.AlertUtils;
 import com.engrisk.utils.NumberUtils;
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -28,11 +28,10 @@ import static com.engrisk.utils.WindowUtils.closeWindow;
 
 public class RoomFormController implements Initializable {
 
-    public RoomTableController roomTableController;
-
-    public ResponseRoomDTO room = new ResponseRoomDTO();
+    public Room room = new Room();
 
     ArrayList<ResponseAttendanceDTO> attendances = new ArrayList<>();
+
     ObservableList<ResponseAttendanceDTO> attendanceObList = FXCollections.observableArrayList();
 
     @FXML
@@ -116,7 +115,7 @@ public class RoomFormController implements Initializable {
             return property;
         });
         listenColumn.setCellFactory(TextFieldTableCell.forTableColumn());
-        listenColumn.setMinWidth(200);
+        listenColumn.setMinWidth(50);
 
         speakColumn.setCellValueFactory(cell -> {
             SimpleStringProperty property = new SimpleStringProperty();
@@ -124,7 +123,7 @@ public class RoomFormController implements Initializable {
             return property;
         });
         speakColumn.setCellFactory(TextFieldTableCell.forTableColumn());
-        speakColumn.setMinWidth(200);
+        speakColumn.setMinWidth(50);
 
         readColumn.setCellValueFactory(cell -> {
             SimpleStringProperty property = new SimpleStringProperty();
@@ -132,7 +131,7 @@ public class RoomFormController implements Initializable {
             return property;
         });
         readColumn.setCellFactory(TextFieldTableCell.forTableColumn());
-        readColumn.setMinWidth(200);
+        readColumn.setMinWidth(50);
 
         writeColumn.setCellValueFactory(cell -> {
             SimpleStringProperty property = new SimpleStringProperty();
@@ -140,7 +139,7 @@ public class RoomFormController implements Initializable {
             return property;
         });
         writeColumn.setCellFactory(TextFieldTableCell.forTableColumn());
-        writeColumn.setMinWidth(200);
+        writeColumn.setMinWidth(50);
 
         listenColumn.setOnEditCommit((TableColumn.CellEditEvent<ResponseAttendanceDTO, String> event) -> {
             TablePosition<ResponseAttendanceDTO, String> pos = event.getTablePosition();
@@ -269,7 +268,6 @@ public class RoomFormController implements Initializable {
         loadData();
         tableAttendance.setItems(attendanceObList);
     }
-
 
     public void initFormValues() {
         nameTextField.setText(room.getName());
