@@ -14,13 +14,19 @@ public class ResponseAttendanceDTO {
     private AttendanceID id;
 
     private ResponseExamRef exam;
+
     private ResponseCandidateRef candidate;
+
     private ResponseRoomRef room;
 
     private Float listening;
+
     private Float speaking;
+
     private Float reading;
+
     private Float writing;
+
     private String code;
 
     public static ResponseAttendanceDTO convert(Attendance attendance) {

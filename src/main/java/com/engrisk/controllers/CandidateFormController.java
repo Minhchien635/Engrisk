@@ -165,11 +165,11 @@ public class CandidateFormController extends BaseFormController {
     @Override
     public void initReadOnly() {
         nameTextField.setEditable(false);
-        birthDateDatePicker.setEditable(false);
-        sexTypeComboBox.setEditable(false);
+        birthDateDatePicker.setDisable(true);
+        sexTypeComboBox.setDisable(true);
         birthPlaceTextField.setEditable(false);
         citizenIdTextField.setEditable(false);
-        citizenIdDateDatePicker.setEditable(false);
+        citizenIdDateDatePicker.setDisable(true);
         citizenIdPlaceTextField.setEditable(false);
         emailTextField.setEditable(false);
         phoneTextField.setEditable(false);
