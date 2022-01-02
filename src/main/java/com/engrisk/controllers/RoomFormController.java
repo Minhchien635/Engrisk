@@ -34,12 +34,16 @@ public class RoomFormController implements Initializable {
 
     ArrayList<ResponseAttendanceDTO> attendances = new ArrayList<>();
     ObservableList<ResponseAttendanceDTO> attendanceObList = FXCollections.observableArrayList();
+
     @FXML
     private TextField nameTextField;
+
     @FXML
     private TableView<ResponseAttendanceDTO> tableAttendance;
+
     @FXML
     private Button saveButton;
+
     @FXML
     private TableColumn<ResponseAttendanceDTO, String> idColumn, nameColumn, listenColumn, speakColumn, readColumn, writeColumn;
 
