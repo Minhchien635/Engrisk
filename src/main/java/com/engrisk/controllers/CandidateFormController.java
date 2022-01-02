@@ -2,11 +2,11 @@ package com.engrisk.controllers;
 
 import com.engrisk.api.CallApi;
 import com.engrisk.dto.Candidate.CreateCandidateDTO;
+import com.engrisk.dto.Candidate.ResponseCandidateDTO;
 import com.engrisk.enums.SexType;
 import com.engrisk.models.Candidate;
 import com.engrisk.utils.AlertUtils;
 import com.engrisk.utils.DateUtils;
-import com.engrisk.utils.NumberUtils;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.mashape.unirest.http.exceptions.UnirestException;
@@ -17,6 +17,7 @@ import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import javafx.scene.layout.VBox;
 import javafx.util.Callback;
+import org.json.JSONObject;
 
 import java.net.URL;
 import java.time.LocalDate;
@@ -105,11 +106,12 @@ public class CandidateFormController extends BaseFormController {
             return;
         }
 
-        if (!NumberUtils.isLong(phoneNumber)) {
+        if (!phoneNumber.matches("^[+]*[(]{0,1}[0-9]{1,4}[)]{0,1}[-\\s\\./0-9]*$")) {
             AlertUtils.showWarning("Số điện thoại không hợp lệ");
             return;
         }
 
+        JSONObject response;
         if (candidate.getId() == null) {
             CreateCandidateDTO candidateDto = new CreateCandidateDTO();
             candidateDto.setName(name);
@@ -124,7 +126,8 @@ public class CandidateFormController extends BaseFormController {
 
             ObjectMapper mapper = new ObjectMapper();
             String request = mapper.writeValueAsString(candidateDto);
-            CallApi.post("candidate", request);
+           response = CallApi.post("candidate", request);
+
         } else {
             candidate.setName(name);
             candidate.setBirthDate(DateUtils.parseDate(birthDate));
@@ -138,7 +141,12 @@ public class CandidateFormController extends BaseFormController {
 
             ObjectMapper mapper = new ObjectMapper();
             String request = mapper.writeValueAsString(candidate);
-            CallApi.put("candidate", request);
+            response = CallApi.put("candidate", request);
+        }
+
+        if(response.toMap().containsKey("error")){
+            AlertUtils.showWarning("Số căn cước công dân đã tồn tại trên hệ thống");
+            return;
         }
 
         candidateTableController.loadData();
