@@ -17,6 +17,7 @@ import javafx.fxml.FXML;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableRow;
 import javafx.scene.control.TableView;
+import org.json.JSONObject;
 
 import java.io.IOException;
 import java.net.URL;
@@ -68,7 +69,13 @@ public class CandidateTableController extends BaseTableController {
         try {
             // Call delete api with candidate id
             Long id = selected.getId();
-            CallApi.delete("candidate/{id}", String.valueOf(id));
+            JSONObject response = CallApi.delete("candidate/{id}", String.valueOf(id));
+
+            if (response.toMap().containsKey("error")) {
+                AlertUtils.showWarning("Không thể xóa. Thí sinh đã có lịch thi");
+                return;
+            }
+
             loadData();
         } catch (Exception ex) {
             ex.printStackTrace();
