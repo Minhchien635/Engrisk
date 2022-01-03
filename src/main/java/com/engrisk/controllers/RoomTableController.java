@@ -2,10 +2,10 @@ package com.engrisk.controllers;
 
 import com.engrisk.api.CallApi;
 import com.engrisk.dto.Room.ResponseRoomDTO;
-import com.engrisk.models.Room;
 import com.engrisk.utils.DateUtils;
 import com.engrisk.utils.StageBuilder;
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.mashape.unirest.http.exceptions.UnirestException;
 import javafx.beans.property.SimpleStringProperty;
@@ -40,13 +40,11 @@ public class RoomTableController implements Initializable {
             row.setOnMouseClicked(event -> {
                 if (event.getClickCount() == 2 && (!row.isEmpty())) {
                     ResponseRoomDTO selected = row.getItem();
-                    Room room = new Room();
-                    room.setName(selected.getName());
 
                     try {
                         // Init controller
                         RoomFormController controller = new RoomFormController();
-                        controller.room = room;
+                        controller.room = selected;
 
                         // Show modal
                         new StageBuilder("room_form", controller, "Chi tiết phòng thi")
@@ -94,6 +92,7 @@ public class RoomTableController implements Initializable {
         ResponseRoomDTO[] responseRoomDTOs;
         String response = CallApi.get("room");
         ObjectMapper mapper = new ObjectMapper();
+        mapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
         responseRoomDTOs = mapper.readValue(response, ResponseRoomDTO[].class);
 
         data.setAll(responseRoomDTOs);

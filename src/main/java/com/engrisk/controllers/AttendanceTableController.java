@@ -8,6 +8,7 @@ import com.engrisk.utils.AlertUtils;
 import com.engrisk.utils.DateUtils;
 import com.engrisk.utils.NumberUtils;
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.mashape.unirest.http.exceptions.UnirestException;
 import javafx.beans.property.SimpleStringProperty;
@@ -183,7 +184,7 @@ public class AttendanceTableController implements Initializable {
                 attendanceDTO.setListening(Float.valueOf(event.getNewValue()));
 
                 for (ResponseAttendanceDTO responseAttendanceDTO : data) {
-                    if (responseAttendanceDTO.getId().equals(attendanceDTO.getId())) {
+                    if (responseAttendanceDTO.getCode().equals(attendanceDTO.getCode())) {
                         data.remove(responseAttendanceDTO);
                         data.add(attendanceDTO);
                         return;
@@ -214,7 +215,7 @@ public class AttendanceTableController implements Initializable {
                 attendanceDTO.setSpeaking(Float.valueOf(event.getNewValue()));
 
                 for (ResponseAttendanceDTO responseAttendanceDTO : data) {
-                    if (responseAttendanceDTO.getId().equals(attendanceDTO.getId())) {
+                    if (responseAttendanceDTO.getCode().equals(attendanceDTO.getCode())) {
                         data.remove(responseAttendanceDTO);
                         data.add(attendanceDTO);
                         return;
@@ -245,7 +246,7 @@ public class AttendanceTableController implements Initializable {
                 attendanceDTO.setReading(Float.valueOf(event.getNewValue()));
 
                 for (ResponseAttendanceDTO responseAttendanceDTO : data) {
-                    if (responseAttendanceDTO.getId().equals(attendanceDTO.getId())) {
+                    if (responseAttendanceDTO.getCode().equals(attendanceDTO.getCode())) {
                         data.remove(responseAttendanceDTO);
                         data.add(attendanceDTO);
                         return;
@@ -276,7 +277,7 @@ public class AttendanceTableController implements Initializable {
                 attendanceDTO.setWriting(Float.valueOf(event.getNewValue()));
 
                 for (ResponseAttendanceDTO responseAttendanceDTO : data) {
-                    if (responseAttendanceDTO.getId().equals(attendanceDTO.getId())) {
+                    if (responseAttendanceDTO.getCode().equals(attendanceDTO.getCode())) {
                         data.remove(responseAttendanceDTO);
                         data.add(attendanceDTO);
                         return;
@@ -324,7 +325,6 @@ public class AttendanceTableController implements Initializable {
             ObjectMapper mapper = new ObjectMapper();
             String request = mapper.writeValueAsString(dto);
             CallApi.put("attendance", request);
-            System.out.println(request);
         }
 
         initData();
@@ -335,6 +335,7 @@ public class AttendanceTableController implements Initializable {
         ResponseAttendanceDTO[] responseAttendanceDTOs;
         String response = CallApi.get("attendance");
         ObjectMapper mapper = new ObjectMapper();
+        mapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
         responseAttendanceDTOs = mapper.readValue(response, ResponseAttendanceDTO[].class);
 
         data.clear();

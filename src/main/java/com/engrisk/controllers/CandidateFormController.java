@@ -4,7 +4,6 @@ import com.engrisk.api.CallApi;
 import com.engrisk.dto.Candidate.CreateCandidateDTO;
 import com.engrisk.dto.Candidate.ResponseCandidateDTO;
 import com.engrisk.enums.SexType;
-import com.engrisk.models.Candidate;
 import com.engrisk.utils.AlertUtils;
 import com.engrisk.utils.DateUtils;
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -26,7 +25,7 @@ import java.util.ResourceBundle;
 
 public class CandidateFormController extends BaseFormController {
 
-    public Candidate candidate = new Candidate();
+    public ResponseCandidateDTO candidate = new ResponseCandidateDTO();
 
     public CandidateTableController candidateTableController;
 
@@ -126,7 +125,7 @@ public class CandidateFormController extends BaseFormController {
 
             ObjectMapper mapper = new ObjectMapper();
             String request = mapper.writeValueAsString(candidateDto);
-           response = CallApi.post("candidate", request);
+            response = CallApi.post("candidate", request);
 
         } else {
             candidate.setName(name);
@@ -144,8 +143,8 @@ public class CandidateFormController extends BaseFormController {
             response = CallApi.put("candidate", request);
         }
 
-        if(response.toMap().containsKey("error")){
-            AlertUtils.showWarning("Số căn cước công dân đã tồn tại trên hệ thống");
+        if (response.toMap().containsKey("error")) {
+            AlertUtils.showWarning("Số căn cước công dân đã tồn tại trên hệ thống: ");
             return;
         }
 

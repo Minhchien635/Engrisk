@@ -3,10 +3,11 @@ package com.engrisk.controllers;
 import com.engrisk.api.CallApi;
 import com.engrisk.dto.Attendance.ResponseAttendanceDTO;
 import com.engrisk.dto.Attendance.UpdateAttendanceResultDTO;
-import com.engrisk.models.Room;
+import com.engrisk.dto.Room.ResponseRoomDTO;
 import com.engrisk.utils.AlertUtils;
 import com.engrisk.utils.NumberUtils;
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.mashape.unirest.http.exceptions.UnirestException;
 import javafx.beans.property.SimpleStringProperty;
@@ -28,7 +29,7 @@ import static com.engrisk.utils.WindowUtils.closeWindow;
 
 public class RoomFormController implements Initializable {
 
-    public Room room = new Room();
+    public ResponseRoomDTO room = new ResponseRoomDTO();
 
     ArrayList<ResponseAttendanceDTO> attendances = new ArrayList<>();
 
@@ -59,9 +60,7 @@ public class RoomFormController implements Initializable {
             ObjectMapper mapper = new ObjectMapper();
             String request = mapper.writeValueAsString(dto);
             CallApi.put("attendance", request);
-            System.out.println(request);
         }
-
         closeWindow(event);
     }
 
@@ -82,6 +81,7 @@ public class RoomFormController implements Initializable {
         ResponseAttendanceDTO[] responseAttendanceDTOs;
         String response = CallApi.get("attendance");
         ObjectMapper mapper = new ObjectMapper();
+        mapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
         responseAttendanceDTOs = mapper.readValue(response, ResponseAttendanceDTO[].class);
 
         ArrayList<ResponseAttendanceDTO> attendancesOfRoom;
@@ -155,7 +155,7 @@ public class RoomFormController implements Initializable {
                 attendanceDTO.setListening(Float.valueOf(event.getNewValue()));
 
                 for (ResponseAttendanceDTO responseAttendanceDTO : attendances) {
-                    if (responseAttendanceDTO.getId().equals(attendanceDTO.getId())) {
+                    if (responseAttendanceDTO.getCode().equals(attendanceDTO.getCode())) {
                         attendances.remove(responseAttendanceDTO);
                         attendances.add(attendanceDTO);
                         return;
@@ -186,7 +186,7 @@ public class RoomFormController implements Initializable {
                 attendanceDTO.setSpeaking(Float.valueOf(event.getNewValue()));
 
                 for (ResponseAttendanceDTO responseAttendanceDTO : attendances) {
-                    if (responseAttendanceDTO.getId().equals(attendanceDTO.getId())) {
+                    if (responseAttendanceDTO.getCode().equals(attendanceDTO.getCode())) {
                         attendances.remove(responseAttendanceDTO);
                         attendances.add(attendanceDTO);
                         return;
@@ -217,7 +217,7 @@ public class RoomFormController implements Initializable {
                 attendanceDTO.setReading(Float.valueOf(event.getNewValue()));
 
                 for (ResponseAttendanceDTO responseAttendanceDTO : attendances) {
-                    if (responseAttendanceDTO.getId().equals(attendanceDTO.getId())) {
+                    if (responseAttendanceDTO.getCode().equals(attendanceDTO.getCode())) {
                         attendances.remove(responseAttendanceDTO);
                         attendances.add(attendanceDTO);
                         return;
@@ -248,7 +248,7 @@ public class RoomFormController implements Initializable {
                 attendanceDTO.setWriting(Float.valueOf(event.getNewValue()));
 
                 for (ResponseAttendanceDTO responseAttendanceDTO : attendances) {
-                    if (responseAttendanceDTO.getId().equals(attendanceDTO.getId())) {
+                    if (responseAttendanceDTO.getCode().equals(attendanceDTO.getCode())) {
                         attendances.remove(responseAttendanceDTO);
                         attendances.add(attendanceDTO);
                         return;

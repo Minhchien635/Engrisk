@@ -17,9 +17,6 @@ module com.engrisk.engrisk {
     exports com.engrisk.controllers;
     opens com.engrisk.controllers to javafx.fxml;
 
-    exports com.engrisk.models;
-    opens com.engrisk.models to javafx.fxml;
-
     exports com.engrisk.dto;
     opens com.engrisk.dto to javafx.fxml;
     opens com.engrisk.dto.Exam;

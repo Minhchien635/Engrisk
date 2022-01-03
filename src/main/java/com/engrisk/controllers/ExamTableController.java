@@ -7,6 +7,7 @@ import com.engrisk.utils.DateUtils;
 import com.engrisk.utils.PriceFormatter;
 import com.engrisk.utils.StageBuilder;
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.mashape.unirest.http.exceptions.UnirestException;
 import javafx.beans.property.SimpleStringProperty;
@@ -92,6 +93,7 @@ public class ExamTableController extends BaseTableController {
         if (response.equals("[]"))
             return;
         ObjectMapper mapper = new ObjectMapper();
+        mapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
         responseExamDTOs = mapper.readValue(response, ResponseExamDTO[].class);
 
         data.setAll(responseExamDTOs);
