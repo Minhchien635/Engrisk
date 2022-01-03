@@ -12,7 +12,7 @@ import com.mashape.unirest.http.exceptions.UnirestException;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
-import javafx.event.ActionEvent;
+import javafx.event.Event;
 import javafx.fxml.FXML;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableRow;
@@ -34,7 +34,7 @@ public class ExamTableController extends BaseTableController {
     ObservableList<ResponseExamDTO> data = FXCollections.observableArrayList();
 
     @FXML
-    public void onCreateClick(ActionEvent event) throws IOException {
+    public void onCreateClick(Event event) throws IOException {
         ExamFormController controller = new ExamFormController();
         controller.examTableController = this;
 
@@ -46,7 +46,7 @@ public class ExamTableController extends BaseTableController {
     }
 
     @FXML
-    public void onEditClick(ActionEvent event) throws IOException {
+    public void onEditClick(Event event) throws IOException {
         ResponseExamDTO exam = table.getSelectionModel().getSelectedItem();
 
         if (exam == null) {
@@ -60,13 +60,13 @@ public class ExamTableController extends BaseTableController {
 
         new StageBuilder("exam_form", controller, "Sửa khóa thi")
                 .setModalOwner(event)
-                .setDimensionsAuto()
+                .setDimensions(-1, 720)
                 .build()
                 .showAndWait();
     }
 
     @FXML
-    public void onDeleteClick(ActionEvent event) {
+    public void onDeleteClick(Event event) {
         ResponseExamDTO selected = table.getSelectionModel().getSelectedItem();
 
         if (selected == null) {
@@ -102,20 +102,8 @@ public class ExamTableController extends BaseTableController {
 
             row.setOnMouseClicked(event -> {
                 if (event.getClickCount() == 2 && !row.isEmpty()) {
-                    ResponseExamDTO exam = row.getItem();
-
                     try {
-                        // Init controller
-                        ExamFormController controller = new ExamFormController();
-                        controller.examTableController = this;
-                        controller.exam = exam;
-
-                        // Show modal
-                        new StageBuilder("exam_form", controller, "Chi tiết khóa thi")
-                                .setModalOwner(event)
-                                .setDimensionsAuto()
-                                .build()
-                                .showAndWait();
+                        onEditClick(event);
                     } catch (IOException e) {
                         e.printStackTrace();
                     }

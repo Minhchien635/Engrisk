@@ -14,6 +14,7 @@ import com.mashape.unirest.http.exceptions.UnirestException;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
+import javafx.event.Event;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import javafx.scene.layout.VBox;
@@ -45,7 +46,7 @@ public class CandidateFormController extends BaseFormController {
     private VBox formInfoVbox;
 
     @Override
-    public void onSaveClick(ActionEvent event) throws JsonProcessingException, UnirestException {
+    public void onSaveClick(Event event) throws JsonProcessingException, UnirestException {
         String name = nameTextField.getText();
         if (name.trim().isEmpty()) {
             AlertUtils.showWarning("Hãy nhập tên thí sinh");

@@ -7,16 +7,16 @@ import com.engrisk.enums.ExamType;
 import com.engrisk.utils.*;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.mashape.unirest.http.HttpResponse;
-import com.mashape.unirest.http.JsonNode;
 import com.mashape.unirest.http.Unirest;
 import com.mashape.unirest.http.exceptions.UnirestException;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
+import javafx.event.Event;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
+import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import org.json.JSONObject;
 
@@ -26,6 +26,7 @@ import java.time.LocalDate;
 import java.util.Date;
 import java.util.Optional;
 import java.util.ResourceBundle;
+import java.util.concurrent.TimeUnit;
 
 public class ExamFormController extends BaseFormController {
 
@@ -36,6 +37,8 @@ public class ExamFormController extends BaseFormController {
     ObservableList<ExamType> examTypes = FXCollections.observableArrayList();
 
     ObservableList<ResponseAttendanceRef> attendances = FXCollections.observableArrayList();
+
+    ObservableList<ResponseRoomRef> rooms = FXCollections.observableArrayList();
 
     @FXML
     public VBox formBody;
@@ -50,7 +53,10 @@ public class ExamFormController extends BaseFormController {
     public DatePicker examDatePicker;
 
     @FXML
-    public VBox attendanceContainer;
+    public VBox attendanceContainer, roomContainer;
+
+    @FXML
+    public HBox attendanceActionButtons, roomActionButtons;
 
     @FXML
     public TableView<ResponseAttendanceRef> attendanceTableView;
@@ -66,8 +72,14 @@ public class ExamFormController extends BaseFormController {
             attendanceCitizenIdDateCol,
             attendanceCitizenIdPlaceCol;
 
+    @FXML
+    public TableView<ResponseRoomRef> roomTableView;
+
+    @FXML
+    public TableColumn<ResponseRoomRef, String> roomNameCol;
+
     @Override
-    public void onSaveClick(ActionEvent event) throws JsonProcessingException, UnirestException {
+    public void onSaveClick(Event event) throws JsonProcessingException, UnirestException {
         String name = nameTextField.getText();
         if (name.trim().isEmpty()) {
             AlertUtils.showWarning("Hãy nhập tên khóa thi");
@@ -130,6 +142,11 @@ public class ExamFormController extends BaseFormController {
         closeWindow(event);
     }
 
+    public void onCancelClick(Event event) throws UnirestException, JsonProcessingException {
+        examTableController.loadData();
+
+        closeWindow(event);
+    }
 
     public void initTypeComboBox() {
         examTypes.setAll(ExamType.A2, ExamType.B1);
@@ -203,6 +220,16 @@ public class ExamFormController extends BaseFormController {
         });
     }
 
+    public void initRoomTable() {
+        roomTableView.setItems(rooms);
+
+        roomNameCol.setCellValueFactory(data -> {
+            SimpleStringProperty property = new SimpleStringProperty();
+            property.setValue(data.getValue().getName());
+            return property;
+        });
+    }
+
     public void onAttendanceAddClick(ActionEvent event) {
         try {
             // Init controller
@@ -245,6 +272,33 @@ public class ExamFormController extends BaseFormController {
         }
     }
 
+    public void onArrangeRoomClick(ActionEvent event) throws UnirestException, JsonProcessingException {
+        // Call arrange room api
+        String responseString = Unirest.put(Api.URL + "exam/{id}/rearrange")
+                                       .routeParam("id", exam.getId().toString())
+                                       .asString()
+                                       .getBody();
+
+        JSONObject responseJson = new JSONObject(responseString);
+
+        // Update data
+        this.exam = new ObjectMapper().readValue(responseString, ResponseExamDTO.class);
+        this.attendances.setAll(exam.getAttendances());
+        this.rooms.setAll(exam.getRooms());
+        hideAttendanceActionButtons();
+        hideRoomActionButtons();
+    }
+
+    public void hideAttendanceActionButtons() {
+        attendanceActionButtons.setManaged(false);
+        attendanceActionButtons.setVisible(false);
+    }
+
+    public void hideRoomActionButtons() {
+        roomActionButtons.setManaged(false);
+        roomActionButtons.setVisible(false);
+    }
+
     @Override
     public void initFormValues() {
         nameTextField.setText(exam.getName());
@@ -252,6 +306,7 @@ public class ExamFormController extends BaseFormController {
         priceTextField.setText(exam.getPrice().toString());
         examDatePicker.setValue(DateUtils.parseLocalDate(exam.getExamDate()));
         attendances.setAll(exam.getAttendances());
+        rooms.setAll(exam.getRooms());
     }
 
     @Override
@@ -261,12 +316,26 @@ public class ExamFormController extends BaseFormController {
         // If edit
         if (exam != null) {
             initAttendanceTable();
+            initRoomTable();
             initFormValues();
+
+            // Hide action buttons if rooms are arranged
+            if (!exam.getRooms().isEmpty()) {
+                hideAttendanceActionButtons();
+                hideRoomActionButtons();
+            }
+
+            // Disable adding/removing attendance 5 days before exam start date
+            long differMilli = exam.examDate.getTime() - new Date().getTime();
+            boolean closed = TimeUnit.MILLISECONDS.toDays(differMilli) < 5;
+            if (closed) {
+                hideAttendanceActionButtons();
+            }
         }
         // Else create
         else {
             // Remove attendance table
-            formBody.getChildren().remove(attendanceContainer);
+            formBody.getChildren().removeAll(attendanceContainer, roomContainer);
         }
     }
 }

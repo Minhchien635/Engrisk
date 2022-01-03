@@ -12,6 +12,7 @@ import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
+import javafx.event.Event;
 import javafx.fxml.FXML;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableRow;
@@ -41,19 +42,19 @@ public class CandidateTableController extends BaseTableController {
     ObservableList<ResponseCandidateDTO> data = FXCollections.observableArrayList();
 
     @Override
-    public void onCreateClick(ActionEvent e) throws Exception {
+    public void onCreateClick(Event event) throws Exception {
         CandidateFormController controller = new CandidateFormController();
         controller.candidateTableController = this;
 
         new StageBuilder("candidate_form", controller, "Thêm thí sinh")
-                .setModalOwner(e)
+                .setModalOwner(event)
                 .setDimensionsAuto()
                 .build()
                 .showAndWait();
     }
 
     @Override
-    public void onEditClick(ActionEvent e) throws Exception {
+    public void onEditClick(Event event) throws Exception {
         ResponseCandidateDTO candidate = table.getSelectionModel().getSelectedItem();
 
         if (candidate == null) {
@@ -66,14 +67,14 @@ public class CandidateTableController extends BaseTableController {
         controller.candidate = candidate;
 
         new StageBuilder("candidate_form", controller, "Sửa khóa thi")
-                .setModalOwner(e)
+                .setModalOwner(event)
                 .setDimensionsAuto()
                 .build()
                 .showAndWait();
     }
 
     @Override
-    public void onDeleteClick(ActionEvent e) {
+    public void onDeleteClick(Event event) {
         ResponseCandidateDTO selected = table.getSelectionModel().getSelectedItem();
 
         if (selected == null) {
@@ -99,21 +100,9 @@ public class CandidateTableController extends BaseTableController {
 
             row.setOnMouseClicked(event -> {
                 if (event.getClickCount() == 2 && (!row.isEmpty())) {
-                    ResponseCandidateDTO candidate = row.getItem();
-
                     try {
-                        // Init controller
-                        CandidateFormController controller = new CandidateFormController();
-                        controller.candidateTableController = this;
-                        controller.candidate = candidate;
-
-                        // Show modal
-                        new StageBuilder("candidate_form", controller, "Chi tiết khóa thi")
-                                .setModalOwner(event)
-                                .setDimensionsAuto()
-                                .build()
-                                .showAndWait();
-                    } catch (IOException e) {
+                        onEditClick(event);
+                    } catch (Exception e) {
                         e.printStackTrace();
                     }
                 }

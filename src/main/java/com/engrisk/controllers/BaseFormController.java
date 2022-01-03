@@ -4,6 +4,7 @@ import com.engrisk.utils.WindowUtils;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.mashape.unirest.http.exceptions.UnirestException;
 import javafx.event.ActionEvent;
+import javafx.event.Event;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
@@ -20,11 +21,11 @@ public abstract class BaseFormController implements Initializable {
         WindowUtils.closeWindow(event);
     }
 
-    public abstract void onSaveClick(ActionEvent event) throws JsonProcessingException, UnirestException;
+    public abstract void onSaveClick(Event event) throws JsonProcessingException, UnirestException;
 
     public abstract void initFormValues();
 
-    public void onCancelClick(ActionEvent event) {
+    public void onCancelClick(Event event) throws UnirestException, JsonProcessingException {
         closeWindow(event);
     }
 

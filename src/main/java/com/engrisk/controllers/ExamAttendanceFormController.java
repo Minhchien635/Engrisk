@@ -15,6 +15,7 @@ import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
+import javafx.event.Event;
 import javafx.fxml.FXML;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
@@ -47,7 +48,7 @@ public class ExamAttendanceFormController extends BaseFormController {
             candidateCitizenIdPlaceCol;
 
     @Override
-    public void onSaveClick(ActionEvent event) throws JsonProcessingException, UnirestException {
+    public void onSaveClick(Event event) throws JsonProcessingException, UnirestException {
         ResponseCandidateDTO selectedCandidate = candidateTableView.getSelectionModel().getSelectedItem();
 
         if (selectedCandidate == null) {
@@ -64,8 +65,8 @@ public class ExamAttendanceFormController extends BaseFormController {
         JSONObject response = Api.post("attendance", requestBody);
 
         if (response.has("error")) {
+            System.out.println(response);
             AlertUtils.showWarning("Đã có lỗi xảy ra");
-            System.out.println(response.get("error"));
             return;
         }
 
@@ -92,10 +93,10 @@ public class ExamAttendanceFormController extends BaseFormController {
 
     public void loadData() throws UnirestException, JsonProcessingException {
         // Candidates that are already in this exam
-        List<Long> existedCandidateIds = examFormController.exam.getAttendances()
-                                                                .stream()
-                                                                .map(x -> x.getCandidate().getId())
-                                                                .collect(Collectors.toList());
+        List<Long> existedCandidateIds = examFormController.attendances
+                .stream()
+                .map(x -> x.getCandidate().getId())
+                .collect(Collectors.toList());
 
         // Get all candidates
         String response = Api.get("candidate");
