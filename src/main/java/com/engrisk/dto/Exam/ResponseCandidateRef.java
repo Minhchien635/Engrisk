@@ -1,10 +1,8 @@
 package com.engrisk.dto.Exam;
 
 import com.engrisk.enums.SexType;
-import com.engrisk.models.Candidate;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.Data;
-import org.modelmapper.ModelMapper;
 
 import java.util.Date;
 
@@ -26,9 +24,4 @@ public class ResponseCandidateRef {
     private String birthPlace;
     private String citizenId;
     private String citizenIdPlace;
-
-    public static ResponseCandidateRef convert(Candidate candidate) {
-        ResponseCandidateRef res = (new ModelMapper()).map(candidate, ResponseCandidateRef.class);
-        return res;
-    }
 }

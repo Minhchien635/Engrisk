@@ -1,23 +1,21 @@
 package com.engrisk.controllers;
 
 import com.engrisk.api.CallApi;
-import com.engrisk.dto.Exam.CreateExamDTO;
-import com.engrisk.dto.Exam.ResponseExamDTO;
-import com.engrisk.dto.Exam.UpdateExamDTO;
+import com.engrisk.dto.Exam.*;
 import com.engrisk.enums.ExamType;
-import com.engrisk.utils.AlertUtils;
-import com.engrisk.utils.DateUtils;
-import com.engrisk.utils.NumberUtils;
+import com.engrisk.enums.SexType;
+import com.engrisk.utils.*;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.mashape.unirest.http.exceptions.UnirestException;
+import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
-import javafx.util.Callback;
+import javafx.scene.layout.VBox;
 
+import java.io.IOException;
 import java.net.URL;
 import java.time.LocalDate;
 import java.util.Date;
@@ -25,23 +23,45 @@ import java.util.ResourceBundle;
 
 public class ExamFormController extends BaseFormController {
 
-    public ResponseExamDTO exam = new ResponseExamDTO();
+    public ResponseExamDTO exam = null;
 
     public ExamTableController examTableController;
 
     ObservableList<ExamType> examTypes = FXCollections.observableArrayList();
 
-    @FXML
-    private TextField nameTextField, priceTextField;
+    ObservableList<ResponseAttendanceRef> attendances = FXCollections.observableArrayList();
 
     @FXML
-    private ComboBox<ExamType> typeComboBox;
+    public VBox formBody;
 
     @FXML
-    private DatePicker examDatePicker;
+    public TextField nameTextField, priceTextField;
+
+    @FXML
+    public ComboBox<ExamType> typeComboBox;
+
+    @FXML
+    public DatePicker examDatePicker;
+
+    @FXML
+    public VBox attendanceContainer;
+
+    @FXML
+    public TableView<ResponseAttendanceRef> attendanceTableView;
+
+    @FXML
+    public TableColumn<ResponseAttendanceRef, String> attendanceNameCol,
+            attendancePhoneCol,
+            attendanceEmailCol,
+            attendanceGenderCol,
+            attendanceBirthDateCol,
+            attendanceBirthPlaceCol,
+            attendanceCitizenIdNumberCol,
+            attendanceCitizenIdDateCol,
+            attendanceCitizenIdPlaceCol;
 
     @Override
-    public void onSaveClick(ActionEvent event) throws JsonProcessingException, UnirestException {
+    public void onSaveClick(ActionEvent event) throws JsonProcessingException {
         String name = nameTextField.getText();
         if (name.trim().isEmpty()) {
             AlertUtils.showWarning("Hãy nhập tên khóa thi");
@@ -77,83 +97,147 @@ public class ExamFormController extends BaseFormController {
             return;
         }
 
-        if (exam.getId() != null) {
-            UpdateExamDTO examDTO = new UpdateExamDTO();
-            examDTO.setId(exam.getId());
-            examDTO.setName(name);
-            examDTO.setType(type);
-            examDTO.setPrice(Long.valueOf(price));
-            examDTO.setExamDate(DateUtils.parseDate(examDatePicker.getValue()));
+        if (exam != null) {
+            UpdateExamDTO updateDTO = new UpdateExamDTO();
+            updateDTO.setId(exam.getId());
+            updateDTO.setName(name);
+            updateDTO.setType(type);
+            updateDTO.setPrice(Long.valueOf(price));
+            updateDTO.setExamDate(DateUtils.parseDate(examDatePicker.getValue()));
 
             ObjectMapper mapper = new ObjectMapper();
-            String request = mapper.writeValueAsString(examDTO);
+            String request = mapper.writeValueAsString(updateDTO);
             CallApi.put("exam", request);
-            System.out.println(request);
+        } else {
+            CreateExamDTO createDTO = new CreateExamDTO();
+            createDTO.setName(name);
+            createDTO.setType(type);
+            createDTO.setPrice(Long.valueOf(price));
+            createDTO.setExamDate(DateUtils.parseDate(examDatePicker.getValue()));
 
-            examTableController.loadData();
-            closeWindow(event);
-
-            return;
+            CallApi.post("exam", createDTO);
         }
 
-        CreateExamDTO examDTO = new CreateExamDTO();
-        examDTO.setName(name);
-        examDTO.setType(type);
-        examDTO.setPrice(Long.valueOf(price));
-        examDTO.setExamDate(DateUtils.parseDate(examDatePicker.getValue()));
-
-        ObjectMapper mapper = new ObjectMapper();
-        String request = mapper.writeValueAsString(examDTO);
-        CallApi.post("exam", request);
-
         examTableController.loadData();
+
         closeWindow(event);
     }
 
     public void initTypeComboBox() {
-        Callback<ListView<ExamType>, ListCell<ExamType>> factory = (lv) -> new ListCell<>() {
+        examTypes.setAll(ExamType.A2, ExamType.B1);
+
+        typeComboBox.setItems(examTypes);
+
+        typeComboBox.setCellFactory(data -> new ListCell<>() {
             @Override
             protected void updateItem(ExamType item, boolean empty) {
                 super.updateItem(item, empty);
                 setText(empty ? "" : item.name());
             }
-        };
-        typeComboBox.setCellFactory(factory);
-
-        typeComboBox.setButtonCell(factory.call(null));
-
-        examTypes.setAll(ExamType.A2, ExamType.B1);
-
-        typeComboBox.setItems(examTypes);
+        });
     }
 
-    @Override
-    public void initReadOnly() {
-        nameTextField.setEditable(false);
-        typeComboBox.setEditable(false);
-        priceTextField.setEditable(false);
-        examDatePicker.setEditable(false);
+    public void initAttendanceTable() {
+        attendanceTableView.setItems(attendances);
+
+        attendanceNameCol.setCellValueFactory(data -> {
+            SimpleStringProperty property = new SimpleStringProperty();
+            property.setValue(data.getValue().getCandidate().getName());
+            return property;
+        });
+
+        attendancePhoneCol.setCellValueFactory(data -> {
+            SimpleStringProperty property = new SimpleStringProperty();
+            property.setValue(data.getValue().getCandidate().getPhone());
+            return property;
+        });
+
+        attendanceEmailCol.setCellValueFactory(data -> {
+            SimpleStringProperty property = new SimpleStringProperty();
+            property.setValue(data.getValue().getCandidate().getEmail());
+            return property;
+        });
+
+        attendanceGenderCol.setCellValueFactory(data -> {
+            SimpleStringProperty property = new SimpleStringProperty();
+            property.setValue(EnumUtils.toString(data.getValue().getCandidate().getSex()));
+            return property;
+        });
+
+        attendanceBirthDateCol.setCellValueFactory(data -> {
+            SimpleStringProperty property = new SimpleStringProperty();
+            property.setValue(DateUtils.format(data.getValue().getCandidate().getBirthDate()));
+            return property;
+        });
+
+        attendanceBirthPlaceCol.setCellValueFactory(data -> {
+            SimpleStringProperty property = new SimpleStringProperty();
+            property.setValue(data.getValue().getCandidate().getBirthPlace());
+            return property;
+        });
+
+        attendanceCitizenIdNumberCol.setCellValueFactory(data -> {
+            SimpleStringProperty property = new SimpleStringProperty();
+            property.setValue(data.getValue().getCandidate().getCitizenId());
+            return property;
+        });
+
+        attendanceCitizenIdDateCol.setCellValueFactory(data -> {
+            SimpleStringProperty property = new SimpleStringProperty();
+            property.setValue(DateUtils.format(data.getValue().getCandidate().getCitizenIdDate()));
+            return property;
+        });
+
+        attendanceCitizenIdPlaceCol.setCellValueFactory(data -> {
+            SimpleStringProperty property = new SimpleStringProperty();
+            property.setValue(data.getValue().getCandidate().getCitizenIdPlace());
+            return property;
+        });
+    }
+
+    public void onAttendanceAddClick(ActionEvent event) {
+        try {
+            // Init controller
+            ExamAttendanceFormController controller = new ExamAttendanceFormController();
+            controller.examFormController = this;
+
+            // Show dialog
+            new StageBuilder("exam_attendance_form", controller, "Thêm thí sinh dự thi")
+                    .setModalOwner(event)
+                    .setDimensionsAuto()
+                    .build()
+                    .showAndWait();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     @Override
     public void initFormValues() {
         nameTextField.setText(exam.getName());
-        typeComboBox.setItems(examTypes);
         typeComboBox.setValue(exam.type);
         priceTextField.setText(exam.getPrice().toString());
         examDatePicker.setValue(DateUtils.parseLocalDate(exam.getExamDate()));
+        attendances.setAll(exam.getAttendances());
+    }
+
+    public void loadData() {
+
     }
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
         initTypeComboBox();
 
-        if (exam.getId() != null) {
+        // If edit
+        if (exam != null) {
+            initAttendanceTable();
             initFormValues();
         }
-
-        if (read_only) {
-            initReadOnly();
+        // Else create
+        else {
+            // Remove attendance table
+            formBody.getChildren().remove(attendanceContainer);
         }
     }
 }

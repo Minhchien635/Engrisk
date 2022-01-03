@@ -1,49 +1,62 @@
 package com.engrisk.api;
 
-import com.mashape.unirest.http.HttpResponse;
-import com.mashape.unirest.http.JsonNode;
-import com.mashape.unirest.http.Unirest;
-import com.mashape.unirest.http.exceptions.UnirestException;
-import org.json.JSONObject;
-
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import kong.unirest.HttpResponse;
+import kong.unirest.JsonNode;
+import kong.unirest.Unirest;
+import kong.unirest.UnirestException;
+import kong.unirest.json.JSONObject;
 
 public class CallApi {
-    public static final String URL = "http://localhost:8081/api/";
-
     public static String get(String route) throws UnirestException {
-        HttpResponse<JsonNode> apiResponse = Unirest.get(URL + route).asJson();
+        HttpResponse<JsonNode> apiResponse = Unirest.get(route).asJson();
         return apiResponse.getBody().toString();
     }
 
     public static JSONObject get(String route, String id) throws UnirestException {
-        HttpResponse<JsonNode> apiResponse = Unirest.get(URL + route)
-                .routeParam("id", id)
-                .asJson();
+        HttpResponse<JsonNode> apiResponse = Unirest.get(route)
+                                                    .routeParam("id", id)
+                                                    .asJson();
+        return apiResponse.getBody().getObject();
+    }
+
+    public static JSONObject post(String route, Object dto) throws JsonProcessingException, UnirestException {
+        ObjectMapper mapper = new ObjectMapper();
+        String body = mapper.writeValueAsString(dto);
+        HttpResponse<JsonNode> apiResponse = Unirest.post(route)
+                                                    .body(body)
+                                                    .asJson();
+        return apiResponse.getBody().getObject();
+    }
+
+    public static JSONObject put(String route, Object dto) throws JsonProcessingException, UnirestException {
+        ObjectMapper mapper = new ObjectMapper();
+        String body = mapper.writeValueAsString(dto);
+        HttpResponse<JsonNode> apiResponse = Unirest.put(route)
+                                                    .body(dto)
+                                                    .asJson();
         return apiResponse.getBody().getObject();
     }
 
     public static JSONObject post(String route, String dto) throws UnirestException {
-        HttpResponse<JsonNode> apiResponse = Unirest.post(URL + route)
-                .header("accept", "application/json")
-                .header("content-type", "application/json")
-                .body(dto)
-                .asJson();
+        HttpResponse<JsonNode> apiResponse = Unirest.post(route)
+                                                    .body(dto)
+                                                    .asJson();
         return apiResponse.getBody().getObject();
     }
 
     public static JSONObject put(String route, String dto) throws UnirestException {
-        HttpResponse<JsonNode> apiResponse = Unirest.put(URL + route)
-                .header("accept", "application/json")
-                .header("content-type", "application/json")
-                .body(dto)
-                .asJson();
+        HttpResponse<JsonNode> apiResponse = Unirest.put(route)
+                                                    .body(dto)
+                                                    .asJson();
         return apiResponse.getBody().getObject();
     }
 
     public static JSONObject delete(String route, String id) throws UnirestException {
-        HttpResponse<JsonNode> apiResponse = Unirest.delete(URL + route)
-                .routeParam("id", id)
-                .asJson();
+        HttpResponse<JsonNode> apiResponse = Unirest.delete(route)
+                                                    .routeParam("id", id)
+                                                    .asJson();
         return apiResponse.getBody().getObject();
     }
 }

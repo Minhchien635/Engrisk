@@ -2,14 +2,14 @@ package com.engrisk.controllers;
 
 import com.engrisk.api.CallApi;
 import com.engrisk.dto.Candidate.CreateCandidateDTO;
+import com.engrisk.dto.Candidate.ResponseCandidateDTO;
+import com.engrisk.dto.Candidate.UpdateCandidateDTO;
 import com.engrisk.enums.SexType;
-import com.engrisk.models.Candidate;
 import com.engrisk.utils.AlertUtils;
 import com.engrisk.utils.DateUtils;
 import com.engrisk.utils.NumberUtils;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.mashape.unirest.http.exceptions.UnirestException;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
@@ -25,7 +25,7 @@ import java.util.ResourceBundle;
 
 public class CandidateFormController extends BaseFormController {
 
-    public Candidate candidate = new Candidate();
+    public ResponseCandidateDTO candidate = null;
 
     public CandidateTableController candidateTableController;
 
@@ -44,7 +44,7 @@ public class CandidateFormController extends BaseFormController {
     private VBox formInfoVbox;
 
     @Override
-    public void onSaveClick(ActionEvent event) throws JsonProcessingException, UnirestException {
+    public void onSaveClick(ActionEvent event) throws JsonProcessingException {
         String name = nameTextField.getText();
         if (name.trim().isEmpty()) {
             AlertUtils.showWarning("Hãy nhập tên thí sinh");
@@ -110,31 +110,30 @@ public class CandidateFormController extends BaseFormController {
             return;
         }
 
-        if (candidate.getId() == null) {
-            CreateCandidateDTO candidateDto = new CreateCandidateDTO();
-            candidateDto.setName(name);
-            candidateDto.setBirthDate(DateUtils.parseDate(birthDate));
-            candidateDto.setSex(sexType);
-            candidateDto.setBirthPlace(birthDatePlace);
-            candidateDto.setCitizenId(citizenId);
-            candidateDto.setCitizenIdDate(DateUtils.parseDate(citizenIdDate));
-            candidateDto.setCitizenIdPlace(citizenIdPlace);
-            candidateDto.setEmail(email);
-            candidateDto.setPhone(phoneNumber);
+        if (candidate == null) {
+            CreateCandidateDTO createDTO = new CreateCandidateDTO();
+            createDTO.setName(name);
+            createDTO.setBirthDate(DateUtils.parseDate(birthDate));
+            createDTO.setSex(sexType);
+            createDTO.setBirthPlace(birthDatePlace);
+            createDTO.setCitizenId(citizenId);
+            createDTO.setCitizenIdDate(DateUtils.parseDate(citizenIdDate));
+            createDTO.setCitizenIdPlace(citizenIdPlace);
+            createDTO.setEmail(email);
+            createDTO.setPhone(phoneNumber);
 
-            ObjectMapper mapper = new ObjectMapper();
-            String request = mapper.writeValueAsString(candidateDto);
-            CallApi.post("candidate", request);
+            CallApi.post("candidate", createDTO);
         } else {
-            candidate.setName(name);
-            candidate.setBirthDate(DateUtils.parseDate(birthDate));
-            candidate.setSex(sexType);
-            candidate.setBirthPlace(birthDatePlace);
-            candidate.setCitizenId(citizenId);
-            candidate.setCitizenIdDate(DateUtils.parseDate(citizenIdDate));
-            candidate.setCitizenIdPlace(citizenIdPlace);
-            candidate.setEmail(email);
-            candidate.setPhone(phoneNumber);
+            UpdateCandidateDTO updateDTO = new UpdateCandidateDTO();
+            updateDTO.setName(name);
+            updateDTO.setBirthDate(DateUtils.parseDate(birthDate));
+            updateDTO.setSex(sexType);
+            updateDTO.setBirthPlace(birthDatePlace);
+            updateDTO.setCitizenId(citizenId);
+            updateDTO.setCitizenIdDate(DateUtils.parseDate(citizenIdDate));
+            updateDTO.setCitizenIdPlace(citizenIdPlace);
+            updateDTO.setEmail(email);
+            updateDTO.setPhone(phoneNumber);
 
             ObjectMapper mapper = new ObjectMapper();
             String request = mapper.writeValueAsString(candidate);
@@ -163,20 +162,6 @@ public class CandidateFormController extends BaseFormController {
     }
 
     @Override
-    public void initReadOnly() {
-        nameTextField.setEditable(false);
-        birthDateDatePicker.setEditable(false);
-        sexTypeComboBox.setEditable(false);
-        birthPlaceTextField.setEditable(false);
-        citizenIdTextField.setEditable(false);
-        citizenIdDateDatePicker.setEditable(false);
-        citizenIdPlaceTextField.setEditable(false);
-        emailTextField.setEditable(false);
-        phoneTextField.setEditable(false);
-        saveButton.setManaged(false);
-    }
-
-    @Override
     public void initFormValues() {
         nameTextField.setText(candidate.getName());
         birthDateDatePicker.setValue(DateUtils.parseLocalDate(candidate.getBirthDate()));
@@ -193,12 +178,8 @@ public class CandidateFormController extends BaseFormController {
     public void initialize(URL url, ResourceBundle resourceBundle) {
         initSexTypeComboBox();
 
-        if (candidate.getId() != null) {
+        if (candidate != null) {
             initFormValues();
-        }
-
-        if (read_only) {
-            initReadOnly();
         }
     }
 }

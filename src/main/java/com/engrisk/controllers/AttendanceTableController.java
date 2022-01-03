@@ -1,11 +1,9 @@
 package com.engrisk.controllers;
 
-import com.engrisk.models.Attendance;
-import com.engrisk.models.Candidate;
+import com.engrisk.dto.Attendance.ResponseAttendanceDTO;
+import com.engrisk.dto.Exam.ResponseCandidateRef;
 import com.engrisk.utils.AlertUtils;
 import com.engrisk.utils.DateUtils;
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.mashape.unirest.http.exceptions.UnirestException;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -25,10 +23,10 @@ import java.util.stream.Collectors;
 
 public class AttendanceTableController implements Initializable {
     @FXML
-    public TableView<Attendance> table;
+    public TableView<ResponseAttendanceDTO> table;
 
     @FXML
-    public TableColumn<Attendance, String> candidateNameColumn,
+    public TableColumn<ResponseAttendanceDTO, String> candidateNameColumn,
             candidatePhoneColumn,
             candidateCodeColumn,
             examNameColumn,
@@ -44,10 +42,10 @@ public class AttendanceTableController implements Initializable {
     TextField nameTextField, phoneTextField;
 
     // Data got from server
-    ArrayList<Attendance> data = new ArrayList<>();
+    ArrayList<ResponseAttendanceDTO> data = new ArrayList<>();
 
     // Data filtered by search bar
-    ObservableList<Attendance> filteredData = FXCollections.observableArrayList();
+    ObservableList<ResponseAttendanceDTO> filteredData = FXCollections.observableArrayList();
 
     @FXML
     public void onSearchSubmit() {
@@ -59,8 +57,8 @@ public class AttendanceTableController implements Initializable {
             return;
         }
 
-        Predicate<Attendance> predicate = attendance -> {
-            Candidate candidate = attendance.getCandidate();
+        Predicate<ResponseAttendanceDTO> predicate = attendance -> {
+            ResponseCandidateRef candidate = attendance.getCandidate();
             String name = candidate.getName().toLowerCase();
             String phone = candidate.getPhone();
 
@@ -76,13 +74,13 @@ public class AttendanceTableController implements Initializable {
         };
 
         filteredData.setAll(data.stream()
-                .filter(predicate)
-                .collect(Collectors.toList()));
+                                .filter(predicate)
+                                .collect(Collectors.toList()));
     }
 
     @FXML
     public void onEditClick() {
-        Attendance selected = table.getSelectionModel().getSelectedItem();
+        ResponseAttendanceDTO selected = table.getSelectionModel().getSelectedItem();
 
         if (selected == null) {
             AlertUtils.showWarning("Hãy chọn dòng muốn sửa");
@@ -171,7 +169,7 @@ public class AttendanceTableController implements Initializable {
         });
     }
 
-    public void initData() throws UnirestException, JsonProcessingException {
+    public void initData() {
         // Get data from server and set to data array and filtered data
     }
 
@@ -179,12 +177,6 @@ public class AttendanceTableController implements Initializable {
     public void initialize(URL url, ResourceBundle resourceBundle) {
         initTable();
         initSearchTextFields();
-        try {
-            initData();
-        } catch (UnirestException e) {
-            e.printStackTrace();
-        } catch (JsonProcessingException e) {
-            e.printStackTrace();
-        }
+        initData();
     }
 }

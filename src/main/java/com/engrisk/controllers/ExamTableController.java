@@ -6,9 +6,6 @@ import com.engrisk.utils.AlertUtils;
 import com.engrisk.utils.DateUtils;
 import com.engrisk.utils.PriceFormatter;
 import com.engrisk.utils.StageBuilder;
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.mashape.unirest.http.exceptions.UnirestException;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -17,6 +14,7 @@ import javafx.fxml.FXML;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableRow;
 import javafx.scene.control.TableView;
+import kong.unirest.Unirest;
 
 import java.io.IOException;
 import java.net.URL;
@@ -27,7 +25,7 @@ public class ExamTableController extends BaseTableController {
     public TableView<ResponseExamDTO> table;
 
     @FXML
-    public TableColumn<ResponseExamDTO, String> nameColumn, typeColumn, priceColumn, dateColumn;
+    public TableColumn<ResponseExamDTO, String> nameCol, typeCol, priceCol, dateCol;
 
     // Data got from server
     ObservableList<ResponseExamDTO> data = FXCollections.observableArrayList();
@@ -86,39 +84,28 @@ public class ExamTableController extends BaseTableController {
     }
 
     @Override
-    public void loadData() throws UnirestException, JsonProcessingException {
-        ResponseExamDTO[] responseExamDTOs;
-        String response = CallApi.get("exam");
-        if (response.equals("[]"))
-            return;
-        ObjectMapper mapper = new ObjectMapper();
-        responseExamDTOs = mapper.readValue(response, ResponseExamDTO[].class);
+    public void loadData() {
+        ResponseExamDTO[] exams = Unirest.get("exam")
+                                         .asObject(ResponseExamDTO[].class)
+                                         .getBody();
 
-        data.setAll(responseExamDTOs);
-        table.refresh();
-    }
-
-    @Override
-    public void onSearchListener() {
-
+        data.setAll(exams);
     }
 
     public void initTable() {
-
         // On row double click
         table.setRowFactory(tv -> {
             TableRow<ResponseExamDTO> row = new TableRow<>();
 
             row.setOnMouseClicked(event -> {
-                if (event.getClickCount() == 2 && (!row.isEmpty())) {
-                    ResponseExamDTO tour = row.getItem();
+                if (event.getClickCount() == 2 && !row.isEmpty()) {
+                    ResponseExamDTO exam = row.getItem();
 
                     try {
                         // Init controller
                         ExamFormController controller = new ExamFormController();
                         controller.examTableController = this;
-                        controller.exam = tour;
-                        controller.read_only = true;
+                        controller.exam = exam;
 
                         // Show modal
                         new StageBuilder("exam_form", controller, "Chi tiết khóa thi")
@@ -135,25 +122,25 @@ public class ExamTableController extends BaseTableController {
             return row;
         });
 
-        nameColumn.setCellValueFactory(cell -> {
+        nameCol.setCellValueFactory(cell -> {
             SimpleStringProperty property = new SimpleStringProperty();
             property.setValue(cell.getValue().getName());
             return property;
         });
 
-        typeColumn.setCellValueFactory(cell -> {
+        typeCol.setCellValueFactory(cell -> {
             SimpleStringProperty property = new SimpleStringProperty();
             property.setValue(cell.getValue().getType().name());
             return property;
         });
 
-        priceColumn.setCellValueFactory(cell -> {
+        priceCol.setCellValueFactory(cell -> {
             SimpleStringProperty property = new SimpleStringProperty();
             property.setValue(PriceFormatter.format(cell.getValue().getPrice()));
             return property;
         });
 
-        dateColumn.setCellValueFactory(cell -> {
+        dateCol.setCellValueFactory(cell -> {
             SimpleStringProperty property = new SimpleStringProperty();
             property.setValue(DateUtils.format(cell.getValue().getExamDate()));
             return property;
@@ -165,10 +152,7 @@ public class ExamTableController extends BaseTableController {
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
         initTable();
-        try {
-            loadData();
-        } catch (UnirestException | JsonProcessingException e) {
-            e.printStackTrace();
-        }
+
+        loadData();
     }
 }

@@ -5,7 +5,6 @@ import com.engrisk.dto.Room.ResponseRoomDTO;
 import com.engrisk.utils.DateUtils;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.mashape.unirest.http.exceptions.UnirestException;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -56,7 +55,7 @@ public class RoomTableController implements Initializable {
         table.setItems(data);
     }
 
-    public void initData() throws UnirestException, JsonProcessingException {
+    public void initData() throws JsonProcessingException {
         ResponseRoomDTO[] responseRoomDTOs;
         String response = CallApi.get("room");
         ObjectMapper mapper = new ObjectMapper();
@@ -69,10 +68,9 @@ public class RoomTableController implements Initializable {
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
         initTable();
+
         try {
             initData();
-        } catch (UnirestException e) {
-            e.printStackTrace();
         } catch (JsonProcessingException e) {
             e.printStackTrace();
         }
