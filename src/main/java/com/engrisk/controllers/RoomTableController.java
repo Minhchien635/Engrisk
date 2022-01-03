@@ -1,10 +1,11 @@
 package com.engrisk.controllers;
 
-import com.engrisk.api.CallApi;
+import com.engrisk.api.Api;
 import com.engrisk.dto.Room.ResponseRoomDTO;
 import com.engrisk.utils.DateUtils;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.mashape.unirest.http.exceptions.UnirestException;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -12,6 +13,7 @@ import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
+import lombok.SneakyThrows;
 
 import java.net.URL;
 import java.util.ResourceBundle;
@@ -55,9 +57,9 @@ public class RoomTableController implements Initializable {
         table.setItems(data);
     }
 
-    public void initData() throws JsonProcessingException {
+    public void loadData() throws JsonProcessingException, UnirestException {
         ResponseRoomDTO[] responseRoomDTOs;
-        String response = CallApi.get("room");
+        String response = Api.get("room");
         ObjectMapper mapper = new ObjectMapper();
         responseRoomDTOs = mapper.readValue(response, ResponseRoomDTO[].class);
 
@@ -65,14 +67,11 @@ public class RoomTableController implements Initializable {
         table.refresh();
     }
 
+    @SneakyThrows
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
         initTable();
 
-        try {
-            initData();
-        } catch (JsonProcessingException e) {
-            e.printStackTrace();
-        }
+        loadData();
     }
 }

@@ -2,6 +2,7 @@ package com.engrisk.controllers;
 
 import com.engrisk.utils.WindowUtils;
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.mashape.unirest.http.exceptions.UnirestException;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
@@ -19,7 +20,7 @@ public abstract class BaseFormController implements Initializable {
         WindowUtils.closeWindow(event);
     }
 
-    public abstract void onSaveClick(ActionEvent event) throws JsonProcessingException;
+    public abstract void onSaveClick(ActionEvent event) throws JsonProcessingException, UnirestException;
 
     public abstract void initFormValues();
 

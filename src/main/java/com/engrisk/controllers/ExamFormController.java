@@ -1,12 +1,16 @@
 package com.engrisk.controllers;
 
-import com.engrisk.api.CallApi;
+import com.engrisk.api.Api;
+import com.engrisk.dto.Attendance.ResponseAttendanceDTO;
 import com.engrisk.dto.Exam.*;
 import com.engrisk.enums.ExamType;
-import com.engrisk.enums.SexType;
 import com.engrisk.utils.*;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.mashape.unirest.http.HttpResponse;
+import com.mashape.unirest.http.JsonNode;
+import com.mashape.unirest.http.Unirest;
+import com.mashape.unirest.http.exceptions.UnirestException;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -14,11 +18,13 @@ import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import javafx.scene.layout.VBox;
+import org.json.JSONObject;
 
 import java.io.IOException;
 import java.net.URL;
 import java.time.LocalDate;
 import java.util.Date;
+import java.util.Optional;
 import java.util.ResourceBundle;
 
 public class ExamFormController extends BaseFormController {
@@ -61,7 +67,7 @@ public class ExamFormController extends BaseFormController {
             attendanceCitizenIdPlaceCol;
 
     @Override
-    public void onSaveClick(ActionEvent event) throws JsonProcessingException {
+    public void onSaveClick(ActionEvent event) throws JsonProcessingException, UnirestException {
         String name = nameTextField.getText();
         if (name.trim().isEmpty()) {
             AlertUtils.showWarning("Hãy nhập tên khóa thi");
@@ -106,22 +112,24 @@ public class ExamFormController extends BaseFormController {
             updateDTO.setExamDate(DateUtils.parseDate(examDatePicker.getValue()));
 
             ObjectMapper mapper = new ObjectMapper();
-            String request = mapper.writeValueAsString(updateDTO);
-            CallApi.put("exam", request);
+            String body = mapper.writeValueAsString(updateDTO);
+            Api.put("exam", body);
         } else {
-            CreateExamDTO createDTO = new CreateExamDTO();
-            createDTO.setName(name);
-            createDTO.setType(type);
-            createDTO.setPrice(Long.valueOf(price));
-            createDTO.setExamDate(DateUtils.parseDate(examDatePicker.getValue()));
+            CreateExamDTO dto = new CreateExamDTO();
+            dto.setName(name);
+            dto.setType(type);
+            dto.setPrice(Long.valueOf(price));
+            dto.setExamDate(DateUtils.parseDate(examDatePicker.getValue()));
 
-            CallApi.post("exam", createDTO);
+            String body = new ObjectMapper().writeValueAsString(dto);
+            Api.post("exam", body);
         }
 
         examTableController.loadData();
 
         closeWindow(event);
     }
+
 
     public void initTypeComboBox() {
         examTypes.setAll(ExamType.A2, ExamType.B1);
@@ -212,6 +220,31 @@ public class ExamFormController extends BaseFormController {
         }
     }
 
+    public void onAttendanceDeleteClick(ActionEvent event) throws UnirestException, JsonProcessingException {
+        ResponseAttendanceRef attendance = attendanceTableView.getSelectionModel().getSelectedItem();
+
+        if (attendance == null) {
+            AlertUtils.showWarning("Hãy chọn thí sinh dự thi để xóa.");
+            return;
+        }
+
+        Alert confirmAlert = AlertUtils.createConfirmAlert("Bạn có chắc là muốn xóa thí sinh này khỏi khóa thi?");
+
+        Optional<ButtonType> result = confirmAlert.showAndWait();
+
+        if (result.isPresent() && result.get() == ButtonType.OK) {
+            String response = Unirest.delete(Api.URL + "attendance/id")
+                                     .queryString("candidateId", attendance.getId().getCandidateId().toString())
+                                     .queryString("examId", attendance.getId().getExamId().toString())
+                                     .asString()
+                                     .getBody();
+
+            ResponseAttendanceDTO responseDTO = new ObjectMapper().readValue(response, ResponseAttendanceDTO.class);
+            Long deletedCandidateId = responseDTO.getCandidate().getId();
+            attendances.removeIf(x -> x.getId().getCandidateId().equals(deletedCandidateId));
+        }
+    }
+
     @Override
     public void initFormValues() {
         nameTextField.setText(exam.getName());
@@ -219,10 +252,6 @@ public class ExamFormController extends BaseFormController {
         priceTextField.setText(exam.getPrice().toString());
         examDatePicker.setValue(DateUtils.parseLocalDate(exam.getExamDate()));
         attendances.setAll(exam.getAttendances());
-    }
-
-    public void loadData() {
-
     }
 
     @Override

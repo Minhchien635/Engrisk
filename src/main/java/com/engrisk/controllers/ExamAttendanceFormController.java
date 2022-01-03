@@ -1,15 +1,16 @@
 package com.engrisk.controllers;
 
+import com.engrisk.api.Api;
 import com.engrisk.dto.Attendance.CreateAttendanceDTO;
 import com.engrisk.dto.Attendance.ResponseAttendanceDTO;
 import com.engrisk.dto.Candidate.ResponseCandidateDTO;
 import com.engrisk.dto.Exam.ResponseAttendanceRef;
-import com.engrisk.dto.Exam.ResponseCandidateRef;
 import com.engrisk.utils.AlertUtils;
 import com.engrisk.utils.DateUtils;
 import com.engrisk.utils.EnumUtils;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.mashape.unirest.http.exceptions.UnirestException;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -17,8 +18,8 @@ import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
-import kong.unirest.Unirest;
-import kong.unirest.json.JSONObject;
+import lombok.SneakyThrows;
+import org.json.JSONObject;
 
 import java.net.URL;
 import java.util.Arrays;
@@ -46,7 +47,7 @@ public class ExamAttendanceFormController extends BaseFormController {
             candidateCitizenIdPlaceCol;
 
     @Override
-    public void onSaveClick(ActionEvent event) throws JsonProcessingException {
+    public void onSaveClick(ActionEvent event) throws JsonProcessingException, UnirestException {
         ResponseCandidateDTO selectedCandidate = candidateTableView.getSelectionModel().getSelectedItem();
 
         if (selectedCandidate == null) {
@@ -58,11 +59,9 @@ public class ExamAttendanceFormController extends BaseFormController {
         CreateAttendanceDTO dto = new CreateAttendanceDTO();
         dto.setExamId(examFormController.exam.getId());
         dto.setCandidateId(selectedCandidate.getId());
-        JSONObject response = Unirest.post("attendance")
-                                     .body(dto)
-                                     .asJson()
-                                     .getBody()
-                                     .getObject();
+
+        String requestBody = new ObjectMapper().writeValueAsString(dto);
+        JSONObject response = Api.post("attendance", requestBody);
 
         if (response.has("error")) {
             AlertUtils.showWarning("Đã có lỗi xảy ra");
@@ -91,7 +90,7 @@ public class ExamAttendanceFormController extends BaseFormController {
     public void initFormValues() {
     }
 
-    public void loadData() {
+    public void loadData() throws UnirestException, JsonProcessingException {
         // Candidates that are already in this exam
         List<Long> existedCandidateIds = examFormController.exam.getAttendances()
                                                                 .stream()
@@ -99,10 +98,8 @@ public class ExamAttendanceFormController extends BaseFormController {
                                                                 .collect(Collectors.toList());
 
         // Get all candidates
-        ResponseCandidateDTO[] candidates = Unirest.get("candidate")
-                                                   .asObject(ResponseCandidateDTO[].class)
-                                                   .getBody();
-
+        String response = Api.get("candidate");
+        ResponseCandidateDTO[] candidates = new ObjectMapper().readValue(response, ResponseCandidateDTO[].class);
 
         // Only show candidates that aren't in this exam
         data.setAll(Arrays.stream(candidates)
@@ -168,6 +165,7 @@ public class ExamAttendanceFormController extends BaseFormController {
         });
     }
 
+    @SneakyThrows
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
         initCandidateTable();

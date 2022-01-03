@@ -1,6 +1,6 @@
 package com.engrisk.controllers;
 
-import com.engrisk.api.CallApi;
+import com.engrisk.api.Api;
 import com.engrisk.dto.Candidate.CreateCandidateDTO;
 import com.engrisk.dto.Candidate.ResponseCandidateDTO;
 import com.engrisk.dto.Candidate.UpdateCandidateDTO;
@@ -10,6 +10,7 @@ import com.engrisk.utils.DateUtils;
 import com.engrisk.utils.NumberUtils;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.mashape.unirest.http.exceptions.UnirestException;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
@@ -44,7 +45,7 @@ public class CandidateFormController extends BaseFormController {
     private VBox formInfoVbox;
 
     @Override
-    public void onSaveClick(ActionEvent event) throws JsonProcessingException {
+    public void onSaveClick(ActionEvent event) throws JsonProcessingException, UnirestException {
         String name = nameTextField.getText();
         if (name.trim().isEmpty()) {
             AlertUtils.showWarning("Hãy nhập tên thí sinh");
@@ -122,7 +123,8 @@ public class CandidateFormController extends BaseFormController {
             createDTO.setEmail(email);
             createDTO.setPhone(phoneNumber);
 
-            CallApi.post("candidate", createDTO);
+            String requestBody = new ObjectMapper().writeValueAsString(createDTO);
+            Api.post("candidate", requestBody);
         } else {
             UpdateCandidateDTO updateDTO = new UpdateCandidateDTO();
             updateDTO.setName(name);
@@ -135,9 +137,8 @@ public class CandidateFormController extends BaseFormController {
             updateDTO.setEmail(email);
             updateDTO.setPhone(phoneNumber);
 
-            ObjectMapper mapper = new ObjectMapper();
-            String request = mapper.writeValueAsString(candidate);
-            CallApi.put("candidate", request);
+            String requestBody = new ObjectMapper().writeValueAsString(candidate);
+            Api.put("candidate", requestBody);
         }
 
         candidateTableController.loadData();

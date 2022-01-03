@@ -1,11 +1,14 @@
 package com.engrisk.controllers;
 
-import com.engrisk.api.CallApi;
+import com.engrisk.api.Api;
 import com.engrisk.dto.Exam.ResponseExamDTO;
 import com.engrisk.utils.AlertUtils;
 import com.engrisk.utils.DateUtils;
 import com.engrisk.utils.PriceFormatter;
 import com.engrisk.utils.StageBuilder;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.mashape.unirest.http.exceptions.UnirestException;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -14,7 +17,7 @@ import javafx.fxml.FXML;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableRow;
 import javafx.scene.control.TableView;
-import kong.unirest.Unirest;
+import lombok.SneakyThrows;
 
 import java.io.IOException;
 import java.net.URL;
@@ -37,7 +40,7 @@ public class ExamTableController extends BaseTableController {
 
         new StageBuilder("exam_form", controller, "Thêm khóa thi")
                 .setModalOwner(event)
-                .setDimensionsAuto()
+                .setDimensions(400, -1)
                 .build()
                 .showAndWait();
     }
@@ -74,7 +77,7 @@ public class ExamTableController extends BaseTableController {
         try {
             // Call delete api with exam id
             long id = selected.getId();
-            CallApi.delete("exam/{id}", String.valueOf(id));
+            Api.delete("exam/{id}", String.valueOf(id));
 
             loadData();
         } catch (Exception e) {
@@ -84,10 +87,10 @@ public class ExamTableController extends BaseTableController {
     }
 
     @Override
-    public void loadData() {
-        ResponseExamDTO[] exams = Unirest.get("exam")
-                                         .asObject(ResponseExamDTO[].class)
-                                         .getBody();
+    public void loadData() throws UnirestException, JsonProcessingException {
+        String response = Api.get("exam");
+
+        ResponseExamDTO[] exams = new ObjectMapper().readValue(response, ResponseExamDTO[].class);
 
         data.setAll(exams);
     }
@@ -149,6 +152,7 @@ public class ExamTableController extends BaseTableController {
         table.setItems(data);
     }
 
+    @SneakyThrows
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
         initTable();

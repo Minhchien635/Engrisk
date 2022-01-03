@@ -56,9 +56,9 @@
             <scope>compile</scope>
         </dependency>
         <dependency>
-            <groupId>com.konghq</groupId>
+            <groupId>com.mashape.unirest</groupId>
             <artifactId>unirest-java</artifactId>
-            <version>3.13.4</version>
+            <version>1.4.9</version>
             <scope>compile</scope>
         </dependency>
         <dependency>

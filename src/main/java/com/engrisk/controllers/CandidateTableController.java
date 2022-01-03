@@ -1,12 +1,13 @@
 package com.engrisk.controllers;
 
-import com.engrisk.api.CallApi;
+import com.engrisk.api.Api;
 import com.engrisk.dto.Candidate.ResponseCandidateDTO;
 import com.engrisk.utils.AlertUtils;
 import com.engrisk.utils.DateUtils;
 import com.engrisk.utils.StageBuilder;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.mashape.unirest.http.exceptions.UnirestException;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -83,7 +84,7 @@ public class CandidateTableController extends BaseTableController {
         try {
             // Call delete api with candidate id
             Long id = selected.getId();
-            CallApi.delete("candidate/{id}", String.valueOf(id));
+            Api.delete("candidate/{id}", String.valueOf(id));
             loadData();
         } catch (Exception ex) {
             ex.printStackTrace();
@@ -192,9 +193,9 @@ public class CandidateTableController extends BaseTableController {
     }
 
     @Override
-    public void loadData() throws JsonProcessingException {
+    public void loadData() throws JsonProcessingException, UnirestException {
         ResponseCandidateDTO[] responseCandidateDTOs;
-        String response = CallApi.get("candidate");
+        String response = Api.get("candidate");
         ArrayList<ResponseCandidateDTO> candidates = new ArrayList<>();
 
         if (!response.equals("[]")) {
@@ -226,9 +227,10 @@ public class CandidateTableController extends BaseTableController {
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
         initTable();
+
         try {
             loadData();
-        } catch (JsonProcessingException e) {
+        } catch (JsonProcessingException | UnirestException e) {
             e.printStackTrace();
         }
     }
