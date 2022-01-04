@@ -19,6 +19,7 @@ import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.TextFieldTableCell;
+import lombok.SneakyThrows;
 
 import java.net.URL;
 import java.util.ArrayList;
@@ -85,7 +86,8 @@ public class RoomFormController implements Initializable {
 
         ArrayList<ResponseAttendanceDTO> attendancesOfRoom;
         attendancesOfRoom = (ArrayList<ResponseAttendanceDTO>) Arrays.stream(responseAttendanceDTOs)
-                                                                     .filter(p -> p.getRoom().getName().equals(room.getName()))
+                                                                     .filter(p -> p.getRoom().getName().equals(room.getName())
+                                                                             && p.getExam().getId().equals(room.getExam().getId()))
                                                                      .collect(Collectors.toList());
 
         attendances.clear();
@@ -276,16 +278,11 @@ public class RoomFormController implements Initializable {
         nameTextField.setText(room.getName());
     }
 
+    @SneakyThrows
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
         initFormValues();
-        try {
-            initTable();
-        } catch (UnirestException e) {
-            e.printStackTrace();
-        } catch (JsonProcessingException e) {
-            e.printStackTrace();
-        }
+        initTable();
         initReadOnly();
     }
 }
