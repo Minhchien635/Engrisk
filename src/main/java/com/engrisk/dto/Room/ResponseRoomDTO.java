@@ -8,6 +8,7 @@ import java.util.List;
 
 @Data
 public class ResponseRoomDTO {
+    private Long id;
     private String name;
     private ResponseExamRef exam;
     private List<ResponseAttendanceRef> attendances;

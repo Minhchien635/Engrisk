@@ -47,7 +47,7 @@ public class RoomFormController extends BaseFormController {
         }
 
         String request = Mapper.create().writeValueAsString(updateAttendanceResultDTOS);
-        Api.put("room/{id}/updateResults", request);
+        Api.put("room/{id}/updateResults", request, room.getId());
         closeWindow(event);
     }
 
