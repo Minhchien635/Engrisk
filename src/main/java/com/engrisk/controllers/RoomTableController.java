@@ -2,6 +2,7 @@ package com.engrisk.controllers;
 
 import com.engrisk.api.Api;
 import com.engrisk.dto.Room.ResponseRoomDTO;
+import com.engrisk.utils.AlertUtils;
 import com.engrisk.utils.DateUtils;
 import com.engrisk.utils.Mapper;
 import com.engrisk.utils.StageBuilder;
@@ -12,6 +13,7 @@ import com.mashape.unirest.http.exceptions.UnirestException;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.event.Event;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.TableColumn;
@@ -33,6 +35,26 @@ public class RoomTableController implements Initializable {
     // Data got from server
     ObservableList<ResponseRoomDTO> data = FXCollections.observableArrayList();
 
+    public void onEditClick(Event event) throws IOException {
+        ResponseRoomDTO selectedRoom = table.getSelectionModel().getSelectedItem();
+
+        if (selectedRoom == null) {
+            AlertUtils.showWarning("Hãy chọn phòng thi để nhập điểm");
+            return;
+        }
+
+        // Init controller
+        RoomFormController controller = new RoomFormController();
+        controller.room = selectedRoom;
+
+        // Show modal
+        new StageBuilder("room_form", controller, "Nhập điểm")
+                .setModalOwner(event)
+                .setDimensionsAuto()
+                .build()
+                .showAndWait();
+    }
+
     public void initTable() {
 
         // On row double click
@@ -41,19 +63,8 @@ public class RoomTableController implements Initializable {
 
             row.setOnMouseClicked(event -> {
                 if (event.getClickCount() == 2 && (!row.isEmpty())) {
-                    ResponseRoomDTO selected = row.getItem();
-
                     try {
-                        // Init controller
-                        RoomFormController controller = new RoomFormController();
-                        controller.room = selected;
-
-                        // Show modal
-                        new StageBuilder("room_form", controller, "Chi tiết phòng thi")
-                                .setModalOwner(event)
-                                .setDimensionsAuto()
-                                .build()
-                                .showAndWait();
+                        onEditClick(event);
                     } catch (IOException e) {
                         e.printStackTrace();
                     }
