@@ -17,11 +17,16 @@ module com.engrisk.engrisk {
     exports com.engrisk.controllers;
     opens com.engrisk.controllers to javafx.fxml;
 
-    exports com.engrisk.dto;
-    opens com.engrisk.dto to javafx.fxml;
+    exports com.engrisk.dto.Exam;
     opens com.engrisk.dto.Exam;
+
+    exports com.engrisk.dto.Attendance;
     opens com.engrisk.dto.Attendance;
+
+    exports com.engrisk.dto.Candidate;
     opens com.engrisk.dto.Candidate;
+
+    exports com.engrisk.dto.Room;
     opens com.engrisk.dto.Room;
 
     exports com.engrisk.utils;

@@ -9,9 +9,6 @@
         <Insets bottom="16.0" left="16.0" right="16.0" top="16.0"/>
     </padding>
     <HBox spacing="16.0" VBox.vgrow="NEVER">
-        <HBox HBox.hgrow="ALWAYS">
-            <Button mnemonicParsing="false" onAction="#onEditClick" text="Sửa điểm"/>
-        </HBox>
         <TextField fx:id="nameTextField" maxWidth="200.0" promptText="Nhập tên" HBox.hgrow="ALWAYS"/>
         <TextField fx:id="phoneTextField" layoutX="681.0" layoutY="10.0" maxWidth="200.0"
                    promptText="Nhập số điện thoại" HBox.hgrow="ALWAYS"/>

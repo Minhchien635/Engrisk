@@ -1,26 +1,26 @@
 package com.engrisk.controllers;
 
-import com.engrisk.api.CallApi;
+import com.engrisk.api.Api;
 import com.engrisk.dto.Candidate.ResponseCandidateDTO;
 import com.engrisk.utils.AlertUtils;
 import com.engrisk.utils.DateUtils;
+import com.engrisk.utils.Mapper;
 import com.engrisk.utils.StageBuilder;
 import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.mashape.unirest.http.exceptions.UnirestException;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
-import javafx.event.ActionEvent;
+import javafx.event.Event;
 import javafx.fxml.FXML;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableRow;
 import javafx.scene.control.TableView;
 import org.json.JSONObject;
 
-import java.io.IOException;
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.ResourceBundle;
 
 public class CandidateTableController extends BaseTableController {
@@ -28,37 +28,53 @@ public class CandidateTableController extends BaseTableController {
     public TableView<ResponseCandidateDTO> table;
 
     @FXML
-    public TableColumn<ResponseCandidateDTO, String> nameColumn,
-            genderColumn,
-            birthDateColumn,
-            birthPlaceColumn,
-            citizenIdColumn,
-            citizenIdDateColumn,
-            citizenIdPlaceColumn,
-            phoneColumn,
-            emailColumn;
+    public TableColumn<ResponseCandidateDTO, String> nameCol,
+            genderCol,
+            birthDateCol,
+            birthPlaceCol,
+            citizenIdCol,
+            citizenIdDateCol,
+            citizenIdPlaceCol,
+            phoneCol,
+            emailCol;
 
     // Data got from server
     ObservableList<ResponseCandidateDTO> data = FXCollections.observableArrayList();
 
     @Override
-    public void onCreateClick(ActionEvent e) throws Exception {
+    public void onCreateClick(Event event) throws Exception {
         CandidateFormController controller = new CandidateFormController();
         controller.candidateTableController = this;
 
         new StageBuilder("candidate_form", controller, "Thêm thí sinh")
-                .setModalOwner(e)
+                .setModalOwner(event)
                 .setDimensionsAuto()
                 .build()
                 .showAndWait();
     }
 
     @Override
-    public void onEditClick(ActionEvent e) throws Exception {
+    public void onEditClick(Event event) throws Exception {
+        ResponseCandidateDTO candidate = table.getSelectionModel().getSelectedItem();
+
+        if (candidate == null) {
+            AlertUtils.showWarning("Hãy chọn khóa thi để sửa");
+            return;
+        }
+
+        CandidateFormController controller = new CandidateFormController();
+        controller.candidateTableController = this;
+        controller.candidate = candidate;
+
+        new StageBuilder("candidate_form", controller, "Sửa khóa thi")
+                .setModalOwner(event)
+                .setDimensionsAuto()
+                .build()
+                .showAndWait();
     }
 
     @Override
-    public void onDeleteClick(ActionEvent e) {
+    public void onDeleteClick(Event event) {
         ResponseCandidateDTO selected = table.getSelectionModel().getSelectedItem();
 
         if (selected == null) {
@@ -69,9 +85,9 @@ public class CandidateTableController extends BaseTableController {
         try {
             // Call delete api with candidate id
             Long id = selected.getId();
-            JSONObject response = CallApi.delete("candidate/{id}", String.valueOf(id));
+            JSONObject response = Api.delete("candidate/{id}", String.valueOf(id));
 
-            if (response.toMap().containsKey("error")) {
+            if (response.has("error")) {
                 AlertUtils.showWarning("Không thể xóa. Thí sinh đã có lịch thi");
                 return;
             }
@@ -90,21 +106,9 @@ public class CandidateTableController extends BaseTableController {
 
             row.setOnMouseClicked(event -> {
                 if (event.getClickCount() == 2 && (!row.isEmpty())) {
-                    ResponseCandidateDTO candidate = row.getItem();
-
                     try {
-                        // Init controller
-                        CandidateFormController controller = new CandidateFormController();
-                        controller.candidateTableController = this;
-                        controller.candidate = candidate;
-
-                        // Show modal
-                        new StageBuilder("candidate_form", controller, "Chi tiết khóa thi")
-                                .setModalOwner(event)
-                                .setDimensionsAuto()
-                                .build()
-                                .showAndWait();
-                    } catch (IOException e) {
+                        onEditClick(event);
+                    } catch (Exception e) {
                         e.printStackTrace();
                     }
                 }
@@ -113,14 +117,14 @@ public class CandidateTableController extends BaseTableController {
             return row;
         });
 
-        nameColumn.setCellValueFactory(cell -> {
+        nameCol.setCellValueFactory(cell -> {
             SimpleStringProperty property = new SimpleStringProperty();
             property.setValue(cell.getValue().getName());
 
             return property;
         });
 
-        genderColumn.setCellValueFactory(cell -> {
+        genderCol.setCellValueFactory(cell -> {
             SimpleStringProperty property = new SimpleStringProperty();
             property.setValue(switch (cell.getValue().getSex()) {
                 case MALE -> "Nam";
@@ -131,49 +135,49 @@ public class CandidateTableController extends BaseTableController {
             return property;
         });
 
-        birthDateColumn.setCellValueFactory(cell -> {
+        birthDateCol.setCellValueFactory(cell -> {
             SimpleStringProperty property = new SimpleStringProperty();
             property.setValue(DateUtils.format(cell.getValue().getBirthDate()));
 
             return property;
         });
 
-        birthPlaceColumn.setCellValueFactory(cell -> {
+        birthPlaceCol.setCellValueFactory(cell -> {
             SimpleStringProperty property = new SimpleStringProperty();
             property.setValue(cell.getValue().getBirthPlace());
 
             return property;
         });
 
-        citizenIdColumn.setCellValueFactory(cell -> {
+        citizenIdCol.setCellValueFactory(cell -> {
             SimpleStringProperty property = new SimpleStringProperty();
             property.setValue(cell.getValue().getCitizenId());
 
             return property;
         });
 
-        citizenIdDateColumn.setCellValueFactory(cell -> {
+        citizenIdDateCol.setCellValueFactory(cell -> {
             SimpleStringProperty property = new SimpleStringProperty();
             property.setValue(DateUtils.format(cell.getValue().getCitizenIdDate()));
 
             return property;
         });
 
-        citizenIdPlaceColumn.setCellValueFactory(cell -> {
+        citizenIdPlaceCol.setCellValueFactory(cell -> {
             SimpleStringProperty property = new SimpleStringProperty();
             property.setValue(cell.getValue().getCitizenIdPlace());
 
             return property;
         });
 
-        phoneColumn.setCellValueFactory(cell -> {
+        phoneCol.setCellValueFactory(cell -> {
             SimpleStringProperty property = new SimpleStringProperty();
             property.setValue(cell.getValue().getPhone());
 
             return property;
         });
 
-        emailColumn.setCellValueFactory(cell -> {
+        emailCol.setCellValueFactory(cell -> {
             SimpleStringProperty property = new SimpleStringProperty();
             property.setValue(cell.getValue().getEmail());
 
@@ -184,33 +188,43 @@ public class CandidateTableController extends BaseTableController {
     }
 
     @Override
-    public void loadData() throws UnirestException, JsonProcessingException {
-        ResponseCandidateDTO[] responseCandidateDTOs = new ResponseCandidateDTO[0];
-        String response = CallApi.get("candidate");
+    public void loadData() throws JsonProcessingException, UnirestException {
+        String response = Api.get("candidate");
+        ArrayList<ResponseCandidateDTO> candidates = new ArrayList<>();
 
         if (!response.equals("[]")) {
-            ObjectMapper mapper = new ObjectMapper();
-            mapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
-            responseCandidateDTOs = mapper.readValue(response, ResponseCandidateDTO[].class);
+            ResponseCandidateDTO[] responseCandidateDTOs = Mapper.create()
+                                                                 .readValue(response, ResponseCandidateDTO[].class);
+
+            for (ResponseCandidateDTO candidateDto : responseCandidateDTOs) {
+                ResponseCandidateDTO candidate = new ResponseCandidateDTO();
+
+                candidate.setId(candidateDto.getId());
+                candidate.setName(candidateDto.getName());
+                candidate.setBirthDate(candidateDto.getBirthDate());
+                candidate.setSex(candidateDto.getSex());
+                candidate.setBirthPlace(candidateDto.getBirthPlace());
+                candidate.setCitizenId(candidateDto.getCitizenId());
+                candidate.setCitizenIdDate(candidateDto.getCitizenIdDate());
+                candidate.setCitizenIdPlace(candidateDto.getCitizenIdPlace());
+                candidate.setEmail(candidateDto.getEmail());
+                candidate.setPhone(candidateDto.getPhone());
+
+                candidates.add(candidate);
+            }
         }
 
-        data.setAll(responseCandidateDTOs);
+        data.setAll(candidates);
         table.refresh();
-    }
-
-    @Override
-    public void onSearchListener() {
-
     }
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
         initTable();
+
         try {
             loadData();
-        } catch (UnirestException e) {
-            e.printStackTrace();
-        } catch (JsonProcessingException e) {
+        } catch (JsonProcessingException | UnirestException e) {
             e.printStackTrace();
         }
     }

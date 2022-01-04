@@ -1,7 +1,7 @@
 package com.engrisk.dto.Attendance;
 
-
 import com.engrisk.dto.Candidate.ResponseExamRef;
+import com.engrisk.dto.Exam.ResponseCandidateRef;
 import com.engrisk.dto.Exam.ResponseRoomRef;
 import lombok.Data;
 

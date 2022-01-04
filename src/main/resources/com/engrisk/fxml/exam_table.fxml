@@ -11,26 +11,17 @@
         <Insets bottom="16.0" left="16.0" right="16.0" top="16.0"/>
     </padding>
     <HBox maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" spacing="16.0" VBox.vgrow="NEVER">
-        <Button contentDisplay="RIGHT" mnemonicParsing="false" onAction="#onCreateClick" text="Thêm"
-                textOverrun="CLIP"/>
-        <Button mnemonicParsing="false" onAction="#onEditClick" text="Sửa">
-            <HBox.margin>
-                <Insets/>
-            </HBox.margin>
-        </Button>
-        <Button mnemonicParsing="false" onAction="#onDeleteClick" text="Xóa">
-            <HBox.margin>
-                <Insets/>
-            </HBox.margin>
-        </Button>
+        <Button mnemonicParsing="false" onAction="#onCreateClick" text="Thêm"/>
+        <Button mnemonicParsing="false" onAction="#onEditClick" text="Sửa"/>
+        <Button mnemonicParsing="false" onAction="#onDeleteClick" text="Xóa"/>
     </HBox>
     <TableView fx:id="table" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minHeight="0.0"
                minWidth="0.0" VBox.vgrow="ALWAYS">
         <columns>
-            <TableColumn fx:id="nameColumn" editable="false" minWidth="100.0" prefWidth="-1.0" text="Tên khóa thi"/>
-            <TableColumn fx:id="typeColumn" editable="false" minWidth="100.0" prefWidth="-1.0" text="Trình độ"/>
-            <TableColumn fx:id="priceColumn" editable="false" minWidth="100.0" prefWidth="-1.0" text="Lệ phí"/>
-            <TableColumn fx:id="dateColumn" editable="false" minWidth="100.0" prefWidth="-1.0" text="Ngày thi"/>
+            <TableColumn fx:id="nameCol" editable="false" minWidth="100.0" prefWidth="-1.0" text="Tên khóa thi"/>
+            <TableColumn fx:id="typeCol" editable="false" minWidth="100.0" prefWidth="-1.0" text="Trình độ"/>
+            <TableColumn fx:id="priceCol" editable="false" minWidth="100.0" prefWidth="-1.0" text="Lệ phí"/>
+            <TableColumn fx:id="dateCol" editable="false" minWidth="100.0" prefWidth="-1.0" text="Ngày thi"/>
         </columns>
     </TableView>
 </VBox>

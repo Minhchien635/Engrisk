@@ -1,11 +1,12 @@
 package com.engrisk.controllers;
 
-import com.engrisk.api.CallApi;
+import com.engrisk.api.Api;
 import com.engrisk.dto.Attendance.ResponseAttendanceDTO;
-import com.engrisk.dto.Attendance.ResponseCandidateRef;
 import com.engrisk.dto.Attendance.UpdateAttendanceResultDTO;
+import com.engrisk.dto.Exam.ResponseCandidateRef;
 import com.engrisk.utils.AlertUtils;
 import com.engrisk.utils.DateUtils;
+import com.engrisk.utils.Mapper;
 import com.engrisk.utils.NumberUtils;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.DeserializationFeature;
@@ -14,12 +15,12 @@ import com.mashape.unirest.http.exceptions.UnirestException;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
-import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.TextFieldTableCell;
 import javafx.scene.input.KeyCode;
+import lombok.SneakyThrows;
 
 import java.net.URL;
 import java.util.ArrayList;
@@ -82,28 +83,13 @@ public class AttendanceTableController implements Initializable {
         };
 
         filteredData.setAll(data.stream()
-                .filter(predicate)
-                .collect(Collectors.toList()));
-    }
-
-    public void onEditClick(ActionEvent e) {
-        // Open edit attendance view (only edit exam points)
-        table.setEditable(true);
-        saveButton.setManaged(true);
-    }
-
-    public void initReadOnly() {
-        table.setEditable(false);
-        saveButton.setManaged(false);
-        candidateNameColumn.setEditable(false);
-        candidatePhoneColumn.setEditable(false);
-        candidateCodeColumn.setEditable(false);
-        examNameColumn.setEditable(false);
-        examTypeColumn.setEditable(false);
-        examDateColumn.setEditable(false);
+                                .filter(predicate)
+                                .collect(Collectors.toList()));
     }
 
     public void initTable() {
+        table.setItems(filteredData);
+
         candidateCodeColumn.setCellValueFactory(cell -> {
             SimpleStringProperty property = new SimpleStringProperty();
             property.setValue(cell.getValue().getCode());
@@ -145,162 +131,24 @@ public class AttendanceTableController implements Initializable {
             property.setValue(cell.getValue().getListening() != null ? cell.getValue().getListening().toString() : "");
             return property;
         });
-        listeningColumn.setCellFactory(TextFieldTableCell.forTableColumn());
-        listeningColumn.setMinWidth(50);
 
         speakingColumn.setCellValueFactory(cell -> {
             SimpleStringProperty property = new SimpleStringProperty();
             property.setValue(cell.getValue().getSpeaking() != null ? cell.getValue().getSpeaking().toString() : "");
             return property;
         });
-        speakingColumn.setCellFactory(TextFieldTableCell.forTableColumn());
-        speakingColumn.setMinWidth(50);
 
         readingColumn.setCellValueFactory(cell -> {
             SimpleStringProperty property = new SimpleStringProperty();
             property.setValue(cell.getValue().getReading() != null ? cell.getValue().getReading().toString() : "");
             return property;
         });
-        readingColumn.setCellFactory(TextFieldTableCell.forTableColumn());
-        readingColumn.setMinWidth(50);
 
         writingColumn.setCellValueFactory(cell -> {
             SimpleStringProperty property = new SimpleStringProperty();
             property.setValue(cell.getValue().getWriting() != null ? cell.getValue().getWriting().toString() : "");
             return property;
         });
-        writingColumn.setCellFactory(TextFieldTableCell.forTableColumn());
-        writingColumn.setMinWidth(50);
-
-        listeningColumn.setOnEditCommit((TableColumn.CellEditEvent<ResponseAttendanceDTO, String> event) -> {
-            TablePosition<ResponseAttendanceDTO, String> pos = event.getTablePosition();
-
-            if (event.getOldValue() == event.getNewValue() || (event.getOldValue().isEmpty() && event.getNewValue().isEmpty())) {
-                table.refresh();
-                return;
-            }
-
-            int row = pos.getRow();
-            if (NumberUtils.isFloat(event.getNewValue())) {
-                ResponseAttendanceDTO attendanceDTO = table.getItems().get(row);
-                attendanceDTO.setListening(Float.valueOf(event.getNewValue()));
-
-                for (ResponseAttendanceDTO responseAttendanceDTO : data) {
-                    if (responseAttendanceDTO.getCandidate().getId().equals(attendanceDTO.getCandidate().getId())
-                            && responseAttendanceDTO.getExam().getId().equals(attendanceDTO.getExam().getId())) {
-                        data.remove(responseAttendanceDTO);
-                        data.add(attendanceDTO);
-                        return;
-                    }
-                }
-
-                event.getTableView().getItems().get(row).setListening(Float.valueOf(event.getNewValue()));
-                table.refresh();
-                return;
-            }
-
-            event.getTableView().getItems().get(row).setListening(Float.valueOf(event.getOldValue()));
-            table.refresh();
-            AlertUtils.showWarning("Hãy nhập số");
-        });
-
-        speakingColumn.setOnEditCommit((TableColumn.CellEditEvent<ResponseAttendanceDTO, String> event) -> {
-            TablePosition<ResponseAttendanceDTO, String> pos = event.getTablePosition();
-
-            if (event.getOldValue() == event.getNewValue() || (event.getOldValue().isEmpty() && event.getNewValue().isEmpty())) {
-                table.refresh();
-                return;
-            }
-
-            int row = pos.getRow();
-            if (NumberUtils.isFloat(event.getNewValue())) {
-                ResponseAttendanceDTO attendanceDTO = table.getItems().get(row);
-                attendanceDTO.setSpeaking(Float.valueOf(event.getNewValue()));
-
-                for (ResponseAttendanceDTO responseAttendanceDTO : data) {
-                    if (responseAttendanceDTO.getCandidate().getId().equals(attendanceDTO.getCandidate().getId())
-                            && responseAttendanceDTO.getExam().getId().equals(attendanceDTO.getExam().getId())) {
-                        data.remove(responseAttendanceDTO);
-                        data.add(attendanceDTO);
-                        return;
-                    }
-                }
-
-                event.getTableView().getItems().get(row).setSpeaking(Float.valueOf(event.getNewValue()));
-                table.refresh();
-                return;
-            }
-
-            event.getTableView().getItems().get(row).setSpeaking(Float.valueOf(event.getOldValue()));
-            table.refresh();
-            AlertUtils.showWarning("Hãy nhập số");
-        });
-
-        readingColumn.setOnEditCommit((TableColumn.CellEditEvent<ResponseAttendanceDTO, String> event) -> {
-            TablePosition<ResponseAttendanceDTO, String> pos = event.getTablePosition();
-
-            if (event.getOldValue() == event.getNewValue() || (event.getOldValue().isEmpty() && event.getNewValue().isEmpty())) {
-                table.refresh();
-                return;
-            }
-
-            int row = pos.getRow();
-            if (NumberUtils.isFloat(event.getNewValue())) {
-                ResponseAttendanceDTO attendanceDTO = table.getItems().get(row);
-                attendanceDTO.setReading(Float.valueOf(event.getNewValue()));
-
-                for (ResponseAttendanceDTO responseAttendanceDTO : data) {
-                    if (responseAttendanceDTO.getCandidate().getId().equals(attendanceDTO.getCandidate().getId())
-                            && responseAttendanceDTO.getExam().getId().equals(attendanceDTO.getExam().getId())) {
-                        data.remove(responseAttendanceDTO);
-                        data.add(attendanceDTO);
-                        return;
-                    }
-                }
-
-                event.getTableView().getItems().get(row).setReading(Float.valueOf(event.getNewValue()));
-                table.refresh();
-                return;
-            }
-
-            event.getTableView().getItems().get(row).setReading(Float.valueOf(event.getOldValue()));
-            table.refresh();
-            AlertUtils.showWarning("Hãy nhập số");
-        });
-
-        writingColumn.setOnEditCommit((TableColumn.CellEditEvent<ResponseAttendanceDTO, String> event) -> {
-            TablePosition<ResponseAttendanceDTO, String> pos = event.getTablePosition();
-
-            if (event.getOldValue() == event.getNewValue() || (event.getOldValue().isEmpty() && event.getNewValue().isEmpty())) {
-                table.refresh();
-                return;
-            }
-
-            int row = pos.getRow();
-            if (NumberUtils.isFloat(event.getNewValue())) {
-                ResponseAttendanceDTO attendanceDTO = table.getItems().get(row);
-                attendanceDTO.setWriting(Float.valueOf(event.getNewValue()));
-
-                for (ResponseAttendanceDTO responseAttendanceDTO : data) {
-                    if (responseAttendanceDTO.getCandidate().getId().equals(attendanceDTO.getCandidate().getId())
-                            && responseAttendanceDTO.getExam().getId().equals(attendanceDTO.getExam().getId())) {
-                        data.remove(responseAttendanceDTO);
-                        data.add(attendanceDTO);
-                        return;
-                    }
-                }
-
-                event.getTableView().getItems().get(row).setWriting(Float.valueOf(event.getNewValue()));
-                table.refresh();
-                return;
-            }
-
-            event.getTableView().getItems().get(row).setWriting((Float.valueOf(event.getOldValue())));
-            table.refresh();
-            AlertUtils.showWarning("Hãy nhập số");
-        });
-
-        table.setItems(filteredData);
     }
 
     // Submit on text field Enter
@@ -318,7 +166,7 @@ public class AttendanceTableController implements Initializable {
         });
     }
 
-    public void onSaveClick(ActionEvent e) throws JsonProcessingException, UnirestException {
+    public void onSaveClick() throws JsonProcessingException, UnirestException {
         for (ResponseAttendanceDTO attendanceDTO : data) {
             UpdateAttendanceResultDTO dto = new UpdateAttendanceResultDTO();
             dto.setCandidateId(attendanceDTO.getCandidate().getId());
@@ -328,21 +176,20 @@ public class AttendanceTableController implements Initializable {
             dto.setReading(attendanceDTO.getReading());
             dto.setWriting(attendanceDTO.getWriting());
 
-            ObjectMapper mapper = new ObjectMapper();
-            String request = mapper.writeValueAsString(dto);
-            CallApi.put("attendance", request);
+            String request = Mapper.create()
+                                   .writeValueAsString(dto);
+            Api.put("attendance", request);
         }
 
-        initData();
+        loadData();
     }
 
-    public void initData() throws UnirestException, JsonProcessingException {
+    public void loadData() throws UnirestException, JsonProcessingException {
         // Get data from server and set to data array and filtered data
         ResponseAttendanceDTO[] responseAttendanceDTOs;
-        String response = CallApi.get("attendance");
-        ObjectMapper mapper = new ObjectMapper();
-        mapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
-        responseAttendanceDTOs = mapper.readValue(response, ResponseAttendanceDTO[].class);
+        String response = Api.get("attendance");
+        responseAttendanceDTOs = Mapper.create()
+                                       .readValue(response, ResponseAttendanceDTO[].class);
 
         data.clear();
         filteredData.clear();
@@ -352,17 +199,11 @@ public class AttendanceTableController implements Initializable {
         table.refresh();
     }
 
+    @SneakyThrows
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
-        try {
-            initData();
-        } catch (UnirestException e) {
-            e.printStackTrace();
-        } catch (JsonProcessingException e) {
-            e.printStackTrace();
-        }
         initTable();
         initSearchTextFields();
-        initReadOnly();
+        loadData();
     }
 }
