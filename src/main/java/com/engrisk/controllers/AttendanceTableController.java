@@ -22,7 +22,9 @@ import javafx.scene.control.cell.TextFieldTableCell;
 import javafx.scene.input.KeyCode;
 
 import java.net.URL;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.ResourceBundle;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
@@ -184,7 +186,8 @@ public class AttendanceTableController implements Initializable {
                 attendanceDTO.setListening(Float.valueOf(event.getNewValue()));
 
                 for (ResponseAttendanceDTO responseAttendanceDTO : data) {
-                    if (responseAttendanceDTO.getCode().equals(attendanceDTO.getCode())) {
+                    if (responseAttendanceDTO.getCandidate().getId().equals(attendanceDTO.getCandidate().getId())
+                            && responseAttendanceDTO.getExam().getId().equals(attendanceDTO.getExam().getId())) {
                         data.remove(responseAttendanceDTO);
                         data.add(attendanceDTO);
                         return;
@@ -215,7 +218,8 @@ public class AttendanceTableController implements Initializable {
                 attendanceDTO.setSpeaking(Float.valueOf(event.getNewValue()));
 
                 for (ResponseAttendanceDTO responseAttendanceDTO : data) {
-                    if (responseAttendanceDTO.getCode().equals(attendanceDTO.getCode())) {
+                    if (responseAttendanceDTO.getCandidate().getId().equals(attendanceDTO.getCandidate().getId())
+                            && responseAttendanceDTO.getExam().getId().equals(attendanceDTO.getExam().getId())) {
                         data.remove(responseAttendanceDTO);
                         data.add(attendanceDTO);
                         return;
@@ -246,7 +250,8 @@ public class AttendanceTableController implements Initializable {
                 attendanceDTO.setReading(Float.valueOf(event.getNewValue()));
 
                 for (ResponseAttendanceDTO responseAttendanceDTO : data) {
-                    if (responseAttendanceDTO.getCode().equals(attendanceDTO.getCode())) {
+                    if (responseAttendanceDTO.getCandidate().getId().equals(attendanceDTO.getCandidate().getId())
+                            && responseAttendanceDTO.getExam().getId().equals(attendanceDTO.getExam().getId())) {
                         data.remove(responseAttendanceDTO);
                         data.add(attendanceDTO);
                         return;
@@ -277,7 +282,8 @@ public class AttendanceTableController implements Initializable {
                 attendanceDTO.setWriting(Float.valueOf(event.getNewValue()));
 
                 for (ResponseAttendanceDTO responseAttendanceDTO : data) {
-                    if (responseAttendanceDTO.getCode().equals(attendanceDTO.getCode())) {
+                    if (responseAttendanceDTO.getCandidate().getId().equals(attendanceDTO.getCandidate().getId())
+                            && responseAttendanceDTO.getExam().getId().equals(attendanceDTO.getExam().getId())) {
                         data.remove(responseAttendanceDTO);
                         data.add(attendanceDTO);
                         return;

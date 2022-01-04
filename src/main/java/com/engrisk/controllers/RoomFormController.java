@@ -155,7 +155,8 @@ public class RoomFormController implements Initializable {
                 attendanceDTO.setListening(Float.valueOf(event.getNewValue()));
 
                 for (ResponseAttendanceDTO responseAttendanceDTO : attendances) {
-                    if (responseAttendanceDTO.getCode().equals(attendanceDTO.getCode())) {
+                    if (responseAttendanceDTO.getCandidate().getId().equals(attendanceDTO.getCandidate().getId())
+                            && responseAttendanceDTO.getExam().getId().equals(attendanceDTO.getExam().getId())) {
                         attendances.remove(responseAttendanceDTO);
                         attendances.add(attendanceDTO);
                         return;
@@ -186,7 +187,8 @@ public class RoomFormController implements Initializable {
                 attendanceDTO.setSpeaking(Float.valueOf(event.getNewValue()));
 
                 for (ResponseAttendanceDTO responseAttendanceDTO : attendances) {
-                    if (responseAttendanceDTO.getCode().equals(attendanceDTO.getCode())) {
+                    if (responseAttendanceDTO.getCandidate().getId().equals(attendanceDTO.getCandidate().getId())
+                            && responseAttendanceDTO.getExam().getId().equals(attendanceDTO.getExam().getId())) {
                         attendances.remove(responseAttendanceDTO);
                         attendances.add(attendanceDTO);
                         return;
@@ -217,7 +219,8 @@ public class RoomFormController implements Initializable {
                 attendanceDTO.setReading(Float.valueOf(event.getNewValue()));
 
                 for (ResponseAttendanceDTO responseAttendanceDTO : attendances) {
-                    if (responseAttendanceDTO.getCode().equals(attendanceDTO.getCode())) {
+                    if (responseAttendanceDTO.getCandidate().getId().equals(attendanceDTO.getCandidate().getId())
+                            && responseAttendanceDTO.getExam().getId().equals(attendanceDTO.getExam().getId())) {
                         attendances.remove(responseAttendanceDTO);
                         attendances.add(attendanceDTO);
                         return;
@@ -248,7 +251,8 @@ public class RoomFormController implements Initializable {
                 attendanceDTO.setWriting(Float.valueOf(event.getNewValue()));
 
                 for (ResponseAttendanceDTO responseAttendanceDTO : attendances) {
-                    if (responseAttendanceDTO.getCode().equals(attendanceDTO.getCode())) {
+                    if (responseAttendanceDTO.getCandidate().getId().equals(attendanceDTO.getCandidate().getId())
+                            && responseAttendanceDTO.getExam().getId().equals(attendanceDTO.getExam().getId())) {
                         attendances.remove(responseAttendanceDTO);
                         attendances.add(attendanceDTO);
                         return;
