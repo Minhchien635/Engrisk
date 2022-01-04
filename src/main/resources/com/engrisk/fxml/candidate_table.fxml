@@ -15,17 +15,17 @@
     </HBox>
     <TableView fx:id="table" VBox.vgrow="ALWAYS">
         <columns>
-            <TableColumn fx:id="nameColumn" editable="false" minWidth="100.0" prefWidth="-1.0" text="Họ tên"/>
-            <TableColumn fx:id="genderColumn" editable="false" minWidth="100.0" prefWidth="-1.0" text="Giới tính"/>
-            <TableColumn fx:id="birthDateColumn" editable="false" minWidth="100.0" prefWidth="-1.0" text="Ngày sinh"/>
-            <TableColumn fx:id="birthPlaceColumn" editable="false" minWidth="100.0" prefWidth="-1.0" text="Nơi sinh"/>
-            <TableColumn fx:id="citizenIdColumn" editable="false" minWidth="100.0" prefWidth="-1.0" text="CCCD"/>
-            <TableColumn fx:id="citizenIdDateColumn" editable="false" minWidth="100.0" prefWidth="-1.0"
+            <TableColumn fx:id="nameCol" editable="false" minWidth="100.0" prefWidth="-1.0" text="Họ tên"/>
+            <TableColumn fx:id="genderCol" editable="false" minWidth="100.0" prefWidth="-1.0" text="Giới tính"/>
+            <TableColumn fx:id="birthDateCol" editable="false" minWidth="100.0" prefWidth="-1.0" text="Ngày sinh"/>
+            <TableColumn fx:id="birthPlaceCol" editable="false" minWidth="100.0" prefWidth="-1.0" text="Nơi sinh"/>
+            <TableColumn fx:id="citizenIdCol" editable="false" minWidth="100.0" prefWidth="-1.0" text="CCCD"/>
+            <TableColumn fx:id="citizenIdDateCol" editable="false" minWidth="100.0" prefWidth="-1.0"
                          text="Ngày cấp"/>
-            <TableColumn fx:id="citizenIdPlaceColumn" editable="false" minWidth="100.0" prefWidth="-1.0"
+            <TableColumn fx:id="citizenIdPlaceCol" editable="false" minWidth="100.0" prefWidth="-1.0"
                          text="Nơi cấp"/>
-            <TableColumn fx:id="phoneColumn" editable="false" minWidth="100.0" prefWidth="-1.0" text="Số điện thoại"/>
-            <TableColumn fx:id="emailColumn" editable="false" minWidth="100.0" prefWidth="-1.0" text="Email"/>
+            <TableColumn fx:id="phoneCol" editable="false" minWidth="100.0" prefWidth="-1.0" text="Số điện thoại"/>
+            <TableColumn fx:id="emailCol" editable="false" minWidth="100.0" prefWidth="-1.0" text="Email"/>
         </columns>
     </TableView>
 </VBox>

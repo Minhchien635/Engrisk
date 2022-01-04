@@ -23,6 +23,7 @@ public class StageBuilder {
     private Stage stage = new Stage();
     private double width = DEFAULT_WIDTH;
     private double height = DEFAULT_HEIGHT;
+    private boolean resizable = true;
     private Window modalOwner;
 
     public StageBuilder(String fxmlFileName, Object controller, String title) {
@@ -53,6 +54,11 @@ public class StageBuilder {
         return this;
     }
 
+    public StageBuilder setResizable(boolean resizable) {
+        this.resizable = resizable;
+        return this;
+    }
+
     public StageBuilder setModalOwner(EventObject event) {
         this.modalOwner = WindowUtils.getWindow(event);
         return this;
@@ -68,7 +74,7 @@ public class StageBuilder {
 
         stage.setScene(scene);
         stage.setTitle(title);
-        stage.setResizable(false);
+        stage.setResizable(resizable);
 
         if (modalOwner != null) {
             stage.initModality(Modality.APPLICATION_MODAL);
