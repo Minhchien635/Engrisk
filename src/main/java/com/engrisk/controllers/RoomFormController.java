@@ -86,7 +86,7 @@ public class RoomFormController implements Initializable {
 
         ArrayList<ResponseAttendanceDTO> attendancesOfRoom;
         attendancesOfRoom = (ArrayList<ResponseAttendanceDTO>) Arrays.stream(responseAttendanceDTOs)
-                .filter(p -> p.getRoom().getName().equals(room.getName()))
+                .filter(p -> p.getRoom().getName().equals(room.getName()) && p.getExam().getId().equals(room.getExam().getId()))
                 .collect(Collectors.toList());
 
         attendances.clear();
