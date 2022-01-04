@@ -87,19 +87,9 @@ public class AttendanceTableController implements Initializable {
                                 .collect(Collectors.toList()));
     }
 
-    @FXML
-    public void onEditClick() {
-        ResponseAttendanceDTO selected = table.getSelectionModel().getSelectedItem();
-
-        if (selected == null) {
-            AlertUtils.showWarning("Hãy chọn dòng muốn sửa");
-            return;
-        }
-
-        // Open edit attendance view (only edit exam points)
-    }
-
     public void initTable() {
+        table.setItems(filteredData);
+
         candidateCodeColumn.setCellValueFactory(cell -> {
             SimpleStringProperty property = new SimpleStringProperty();
             property.setValue(cell.getValue().getCode());
@@ -141,162 +131,24 @@ public class AttendanceTableController implements Initializable {
             property.setValue(cell.getValue().getListening() != null ? cell.getValue().getListening().toString() : "");
             return property;
         });
-        listeningColumn.setCellFactory(TextFieldTableCell.forTableColumn());
-        listeningColumn.setMinWidth(50);
 
         speakingColumn.setCellValueFactory(cell -> {
             SimpleStringProperty property = new SimpleStringProperty();
             property.setValue(cell.getValue().getSpeaking() != null ? cell.getValue().getSpeaking().toString() : "");
             return property;
         });
-        speakingColumn.setCellFactory(TextFieldTableCell.forTableColumn());
-        speakingColumn.setMinWidth(50);
 
         readingColumn.setCellValueFactory(cell -> {
             SimpleStringProperty property = new SimpleStringProperty();
             property.setValue(cell.getValue().getReading() != null ? cell.getValue().getReading().toString() : "");
             return property;
         });
-        readingColumn.setCellFactory(TextFieldTableCell.forTableColumn());
-        readingColumn.setMinWidth(50);
 
         writingColumn.setCellValueFactory(cell -> {
             SimpleStringProperty property = new SimpleStringProperty();
             property.setValue(cell.getValue().getWriting() != null ? cell.getValue().getWriting().toString() : "");
             return property;
         });
-        writingColumn.setCellFactory(TextFieldTableCell.forTableColumn());
-        writingColumn.setMinWidth(50);
-
-        listeningColumn.setOnEditCommit((TableColumn.CellEditEvent<ResponseAttendanceDTO, String> event) -> {
-            TablePosition<ResponseAttendanceDTO, String> pos = event.getTablePosition();
-
-            if (event.getOldValue().equals(event.getNewValue()) || (event.getOldValue().isEmpty() && event.getNewValue().isEmpty())) {
-                table.refresh();
-                return;
-            }
-
-            int row = pos.getRow();
-            if (NumberUtils.isFloat(event.getNewValue())) {
-                ResponseAttendanceDTO attendanceDTO = table.getItems().get(row);
-                attendanceDTO.setListening(Float.valueOf(event.getNewValue()));
-
-                for (ResponseAttendanceDTO responseAttendanceDTO : data) {
-                    if (responseAttendanceDTO.getCandidate().getId().equals(attendanceDTO.getCandidate().getId())
-                            && responseAttendanceDTO.getExam().getId().equals(attendanceDTO.getExam().getId())) {
-                        data.remove(responseAttendanceDTO);
-                        data.add(attendanceDTO);
-                        return;
-                    }
-                }
-
-                event.getTableView().getItems().get(row).setListening(Float.valueOf(event.getNewValue()));
-                table.refresh();
-                return;
-            }
-
-            event.getTableView().getItems().get(row).setListening(Float.valueOf(event.getOldValue()));
-            table.refresh();
-            AlertUtils.showWarning("Hãy nhập số");
-        });
-
-        speakingColumn.setOnEditCommit((TableColumn.CellEditEvent<ResponseAttendanceDTO, String> event) -> {
-            TablePosition<ResponseAttendanceDTO, String> pos = event.getTablePosition();
-
-            if (event.getOldValue().equals(event.getNewValue()) || (event.getOldValue().isEmpty() && event.getNewValue().isEmpty())) {
-                table.refresh();
-                return;
-            }
-
-            int row = pos.getRow();
-            if (NumberUtils.isFloat(event.getNewValue())) {
-                ResponseAttendanceDTO attendanceDTO = table.getItems().get(row);
-                attendanceDTO.setSpeaking(Float.valueOf(event.getNewValue()));
-
-                for (ResponseAttendanceDTO responseAttendanceDTO : data) {
-                    if (responseAttendanceDTO.getCandidate().getId().equals(attendanceDTO.getCandidate().getId())
-                            && responseAttendanceDTO.getExam().getId().equals(attendanceDTO.getExam().getId())) {
-                        data.remove(responseAttendanceDTO);
-                        data.add(attendanceDTO);
-                        return;
-                    }
-                }
-
-                event.getTableView().getItems().get(row).setSpeaking(Float.valueOf(event.getNewValue()));
-                table.refresh();
-                return;
-            }
-
-            event.getTableView().getItems().get(row).setSpeaking(Float.valueOf(event.getOldValue()));
-            table.refresh();
-            AlertUtils.showWarning("Hãy nhập số");
-        });
-
-        readingColumn.setOnEditCommit((TableColumn.CellEditEvent<ResponseAttendanceDTO, String> event) -> {
-            TablePosition<ResponseAttendanceDTO, String> pos = event.getTablePosition();
-
-            if (event.getOldValue().equals(event.getNewValue()) || (event.getOldValue().isEmpty() && event.getNewValue().isEmpty())) {
-                table.refresh();
-                return;
-            }
-
-            int row = pos.getRow();
-            if (NumberUtils.isFloat(event.getNewValue())) {
-                ResponseAttendanceDTO attendanceDTO = table.getItems().get(row);
-                attendanceDTO.setReading(Float.valueOf(event.getNewValue()));
-
-                for (ResponseAttendanceDTO responseAttendanceDTO : data) {
-                    if (responseAttendanceDTO.getCandidate().getId().equals(attendanceDTO.getCandidate().getId())
-                            && responseAttendanceDTO.getExam().getId().equals(attendanceDTO.getExam().getId())) {
-                        data.remove(responseAttendanceDTO);
-                        data.add(attendanceDTO);
-                        return;
-                    }
-                }
-
-                event.getTableView().getItems().get(row).setReading(Float.valueOf(event.getNewValue()));
-                table.refresh();
-                return;
-            }
-
-            event.getTableView().getItems().get(row).setReading(Float.valueOf(event.getOldValue()));
-            table.refresh();
-            AlertUtils.showWarning("Hãy nhập số");
-        });
-
-        writingColumn.setOnEditCommit((TableColumn.CellEditEvent<ResponseAttendanceDTO, String> event) -> {
-            TablePosition<ResponseAttendanceDTO, String> pos = event.getTablePosition();
-
-            if (event.getOldValue().equals(event.getNewValue()) || (event.getOldValue().isEmpty() && event.getNewValue().isEmpty())) {
-                table.refresh();
-                return;
-            }
-
-            int row = pos.getRow();
-            if (NumberUtils.isFloat(event.getNewValue())) {
-                ResponseAttendanceDTO attendanceDTO = table.getItems().get(row);
-                attendanceDTO.setWriting(Float.valueOf(event.getNewValue()));
-
-                for (ResponseAttendanceDTO responseAttendanceDTO : data) {
-                    if (responseAttendanceDTO.getCandidate().getId().equals(attendanceDTO.getCandidate().getId())
-                            && responseAttendanceDTO.getExam().getId().equals(attendanceDTO.getExam().getId())) {
-                        data.remove(responseAttendanceDTO);
-                        data.add(attendanceDTO);
-                        return;
-                    }
-                }
-
-                event.getTableView().getItems().get(row).setWriting(Float.valueOf(event.getNewValue()));
-                table.refresh();
-                return;
-            }
-
-            event.getTableView().getItems().get(row).setWriting((Float.valueOf(event.getOldValue())));
-            table.refresh();
-            AlertUtils.showWarning("Hãy nhập số");
-        });
-
-        table.setItems(filteredData);
     }
 
     // Submit on text field Enter
