@@ -263,19 +263,24 @@ public class ExamFormController extends BaseFormController {
             return;
         }
 
-        // Call arrange room api
-        String responseString = Unirest.put(Api.URL + "exam/{id}/rearrange")
-                .routeParam("id", exam.getId().toString())
-                .asString()
-                .getBody();
+        Alert alert = AlertUtils.createConfirmAlert("Bạn chắc chắn muốn xếp phòng? Sau khi xếp phòng thì sẽ không thể thêm, xóa thí sinh.");
+        Optional<ButtonType> result = alert.showAndWait();
 
-        // Update data
-        this.exam = Mapper.create()
-                .readValue(responseString, ResponseExamDTO.class);
-        this.attendances.setAll(exam.getAttendances());
-        this.rooms.setAll(exam.getRooms());
-        hideAttendanceActionButtons();
-        hideRearrangeButton();
+        if (result.isPresent() && result.get() == ButtonType.OK) {
+            // Call arrange room api
+            String responseString = Unirest.put(Api.URL + "exam/{id}/rearrange")
+                    .routeParam("id", exam.getId().toString())
+                    .asString()
+                    .getBody();
+
+            // Update data
+            this.exam = Mapper.create()
+                    .readValue(responseString, ResponseExamDTO.class);
+            this.attendances.setAll(exam.getAttendances());
+            this.rooms.setAll(exam.getRooms());
+            hideAttendanceActionButtons();
+            hideRearrangeButton();
+        }
     }
 
     public void hideAttendanceActionButtons() {
