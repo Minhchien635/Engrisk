@@ -19,9 +19,14 @@ public class ResponseCandidateRef {
     private SexType sex;
 
     private String name;
+
     private String phone;
+
     private String email;
+
     private String birthPlace;
+
     private String citizenId;
+
     private String citizenIdPlace;
 }

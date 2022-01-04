@@ -8,7 +8,9 @@ import com.engrisk.dto.Exam.ResponseAttendanceRef;
 import com.engrisk.utils.AlertUtils;
 import com.engrisk.utils.DateUtils;
 import com.engrisk.utils.EnumUtils;
+import com.engrisk.utils.Mapper;
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.mashape.unirest.http.exceptions.UnirestException;
 import javafx.beans.property.SimpleStringProperty;
@@ -61,7 +63,7 @@ public class ExamAttendanceFormController extends BaseFormController {
         dto.setExamId(examFormController.exam.getId());
         dto.setCandidateId(selectedCandidate.getId());
 
-        String requestBody = new ObjectMapper().writeValueAsString(dto);
+        String requestBody = Mapper.create().writeValueAsString(dto);
         JSONObject response = Api.post("attendance", requestBody);
 
         if (response.has("error")) {
@@ -70,9 +72,9 @@ public class ExamAttendanceFormController extends BaseFormController {
             return;
         }
 
-        ResponseAttendanceDTO responseDTO = new ObjectMapper().readValue(response.toString(), ResponseAttendanceDTO.class);
+        ResponseAttendanceDTO responseDTO = Mapper.create()
+                                                  .readValue(response.toString(), ResponseAttendanceDTO.class);
         ResponseAttendanceRef examAttendance = new ResponseAttendanceRef();
-        examAttendance.setId(responseDTO.getId());
         examAttendance.setCandidate(responseDTO.getCandidate());
         examAttendance.setCode(responseDTO.getCode());
         examAttendance.setListening(responseDTO.getListening());
@@ -100,7 +102,8 @@ public class ExamAttendanceFormController extends BaseFormController {
 
         // Get all candidates
         String response = Api.get("candidate");
-        ResponseCandidateDTO[] candidates = new ObjectMapper().readValue(response, ResponseCandidateDTO[].class);
+        ResponseCandidateDTO[] candidates = Mapper.create()
+                                                  .readValue(response, ResponseCandidateDTO[].class);
 
         // Only show candidates that aren't in this exam
         data.setAll(Arrays.stream(candidates)

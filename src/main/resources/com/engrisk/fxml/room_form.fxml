@@ -1,12 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 <VBox xmlns:fx="http://javafx.com/fxml/1" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity"
-      prefHeight="591.0" prefWidth="714.0" style="-fx-padding: 10;"
+      prefHeight="628.0" prefWidth="714.0" style="-fx-padding: 10;"
       xmlns="http://javafx.com/javafx/17">
     <children>
         <VBox prefHeight="209.0" prefWidth="694.0">
@@ -16,36 +15,33 @@
                         <Font size="21.0"/>
                     </font>
                 </Label>
-                <TextField fx:id="nameTextField" prefHeight="40.0" prefWidth="714.0"/>
+                <TextField fx:id="nameTextField" prefHeight="34.0" prefWidth="694.0"/>
             </children>
         </VBox>
-        <VBox prefHeight="598.0" prefWidth="694.0">
+        <VBox prefHeight="643.0" prefWidth="694.0">
             <children>
                 <HBox alignment="CENTER_LEFT" prefHeight="46.0" prefWidth="694.0">
                     <children>
-                        <Label prefHeight="26.0" prefWidth="559.0" text="Thí sinh">
+                        <Label prefHeight="26.0" prefWidth="603.0" text="Thí sinh">
                             <font>
                                 <Font size="21.0"/>
                             </font>
                         </Label>
-                        <Button mnemonicParsing="false" text="Nhập điểm">
-                            <font>
-                                <Font size="20.0"/>
-                            </font>
-                        </Button>
+                        <Button mnemonicParsing="false" onAction="#onAddCoreClick" text="Nhập điểm"/>
                     </children>
                 </HBox>
-                <TableView prefHeight="444.0" prefWidth="694.0">
+                <TableView fx:id="tableAttendance" prefHeight="451.0" prefWidth="694.0">
                     <columns>
-                        <TableColumn prefWidth="75.0" text="SBD"/>
-                        <TableColumn prefWidth="75.0" text="Họ và tên"/>
-                        <TableColumn prefWidth="75.0" text="Nghe"/>
-                        <TableColumn prefWidth="75.0" text="Nói"/>
-                        <TableColumn prefWidth="75.0" text="Đọc"/>
-                        <TableColumn prefWidth="75.0" text="Viết"/>
+                        <TableColumn fx:id="idColumn" prefWidth="75.0" text="SBD"/>
+                        <TableColumn fx:id="nameColumn" prefWidth="298.0" text="Họ và tên"/>
+                        <TableColumn fx:id="listenColumn" minWidth="0.0" prefWidth="83.0" text="Nghe"/>
+                        <TableColumn fx:id="speakColumn" prefWidth="82.0" text="Nói"/>
+                        <TableColumn fx:id="readColumn" prefWidth="79.0" text="Đọc"/>
+                        <TableColumn fx:id="writeColumn" prefWidth="76.0" text="Viết"/>
                     </columns>
                 </TableView>
             </children>
         </VBox>
+        <Button fx:id="saveButton" mnemonicParsing="false" onAction="#onSaveClick" prefWidth="694.0" text="Lưu"/>
     </children>
 </VBox>

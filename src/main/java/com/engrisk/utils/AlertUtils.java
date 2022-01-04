@@ -16,6 +16,6 @@ public class AlertUtils {
         alert.setTitle("Thông báo");
         alert.setHeaderText(null);
         alert.setContentText(content);
-        alert.showAndWait();
+        alert.show();
     }
 }

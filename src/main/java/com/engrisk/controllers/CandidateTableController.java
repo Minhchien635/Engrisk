@@ -4,6 +4,7 @@ import com.engrisk.api.Api;
 import com.engrisk.dto.Candidate.ResponseCandidateDTO;
 import com.engrisk.utils.AlertUtils;
 import com.engrisk.utils.DateUtils;
+import com.engrisk.utils.Mapper;
 import com.engrisk.utils.StageBuilder;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -11,14 +12,13 @@ import com.mashape.unirest.http.exceptions.UnirestException;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
-import javafx.event.ActionEvent;
 import javafx.event.Event;
 import javafx.fxml.FXML;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableRow;
 import javafx.scene.control.TableView;
+import org.json.JSONObject;
 
-import java.io.IOException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.ResourceBundle;
@@ -85,7 +85,13 @@ public class CandidateTableController extends BaseTableController {
         try {
             // Call delete api with candidate id
             Long id = selected.getId();
-            Api.delete("candidate/{id}", String.valueOf(id));
+            JSONObject response = Api.delete("candidate/{id}", String.valueOf(id));
+
+            if (response.has("error")) {
+                AlertUtils.showWarning("Không thể xóa. Thí sinh đã có lịch thi");
+                return;
+            }
+
             loadData();
         } catch (Exception ex) {
             ex.printStackTrace();
@@ -183,13 +189,12 @@ public class CandidateTableController extends BaseTableController {
 
     @Override
     public void loadData() throws JsonProcessingException, UnirestException {
-        ResponseCandidateDTO[] responseCandidateDTOs;
         String response = Api.get("candidate");
         ArrayList<ResponseCandidateDTO> candidates = new ArrayList<>();
 
         if (!response.equals("[]")) {
-            ObjectMapper mapper = new ObjectMapper();
-            responseCandidateDTOs = mapper.readValue(response, ResponseCandidateDTO[].class);
+            ResponseCandidateDTO[] responseCandidateDTOs = Mapper.create()
+                                                                 .readValue(response, ResponseCandidateDTO[].class);
 
             for (ResponseCandidateDTO candidateDto : responseCandidateDTOs) {
                 ResponseCandidateDTO candidate = new ResponseCandidateDTO();

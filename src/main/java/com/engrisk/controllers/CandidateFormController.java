@@ -7,18 +7,18 @@ import com.engrisk.dto.Candidate.UpdateCandidateDTO;
 import com.engrisk.enums.SexType;
 import com.engrisk.utils.AlertUtils;
 import com.engrisk.utils.DateUtils;
-import com.engrisk.utils.NumberUtils;
+import com.engrisk.utils.Mapper;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.mashape.unirest.http.exceptions.UnirestException;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
-import javafx.event.ActionEvent;
 import javafx.event.Event;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import javafx.scene.layout.VBox;
 import javafx.util.Callback;
+import org.json.JSONObject;
 
 import java.net.URL;
 import java.time.LocalDate;
@@ -107,11 +107,12 @@ public class CandidateFormController extends BaseFormController {
             return;
         }
 
-        if (!NumberUtils.isLong(phoneNumber)) {
+        if (!phoneNumber.matches("^[+]*[(]{0,1}[0-9]{1,4}[)]{0,1}[-\\s\\./0-9]*$")) {
             AlertUtils.showWarning("Số điện thoại không hợp lệ");
             return;
         }
 
+        JSONObject response;
         if (candidate == null) {
             CreateCandidateDTO createDTO = new CreateCandidateDTO();
             createDTO.setName(name);
@@ -124,8 +125,8 @@ public class CandidateFormController extends BaseFormController {
             createDTO.setEmail(email);
             createDTO.setPhone(phoneNumber);
 
-            String requestBody = new ObjectMapper().writeValueAsString(createDTO);
-            Api.post("candidate", requestBody);
+            String requestBody = Mapper.create().writeValueAsString(createDTO);
+            response = Api.post("candidate", requestBody);
         } else {
             UpdateCandidateDTO updateDTO = new UpdateCandidateDTO();
             updateDTO.setName(name);
@@ -138,8 +139,13 @@ public class CandidateFormController extends BaseFormController {
             updateDTO.setEmail(email);
             updateDTO.setPhone(phoneNumber);
 
-            String requestBody = new ObjectMapper().writeValueAsString(candidate);
-            Api.put("candidate", requestBody);
+            String requestBody = Mapper.create().writeValueAsString(candidate);
+            response = Api.put("candidate", requestBody);
+        }
+
+        if (response.has("error")) {
+            AlertUtils.showWarning("Số căn cước công dân đã tồn tại trên hệ thống: ");
+            return;
         }
 
         candidateTableController.loadData();
@@ -151,7 +157,12 @@ public class CandidateFormController extends BaseFormController {
             @Override
             protected void updateItem(SexType item, boolean empty) {
                 super.updateItem(item, empty);
-                setText(empty ? "" : item.name());
+                setText(empty ? "" : switch (item.name()) {
+                    case "MALE" -> "Nam";
+                    case "FEMALE" -> "Nữ";
+                    case "OTHER" -> "Khác";
+                    default -> "";
+                });
             }
         };
         sexTypeComboBox.setCellFactory(factory);

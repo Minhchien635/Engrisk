@@ -2,11 +2,9 @@ package com.engrisk.controllers;
 
 import com.engrisk.api.Api;
 import com.engrisk.dto.Exam.ResponseExamDTO;
-import com.engrisk.utils.AlertUtils;
-import com.engrisk.utils.DateUtils;
-import com.engrisk.utils.PriceFormatter;
-import com.engrisk.utils.StageBuilder;
+import com.engrisk.utils.*;
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.mashape.unirest.http.exceptions.UnirestException;
 import javafx.beans.property.SimpleStringProperty;
@@ -90,7 +88,8 @@ public class ExamTableController extends BaseTableController {
     public void loadData() throws UnirestException, JsonProcessingException {
         String response = Api.get("exam");
 
-        ResponseExamDTO[] exams = new ObjectMapper().readValue(response, ResponseExamDTO[].class);
+        ResponseExamDTO[] exams = Mapper.create()
+                                        .readValue(response, ResponseExamDTO[].class);
 
         data.setAll(exams);
     }

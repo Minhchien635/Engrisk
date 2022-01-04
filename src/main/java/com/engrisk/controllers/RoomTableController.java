@@ -3,7 +3,10 @@ package com.engrisk.controllers;
 import com.engrisk.api.Api;
 import com.engrisk.dto.Room.ResponseRoomDTO;
 import com.engrisk.utils.DateUtils;
+import com.engrisk.utils.Mapper;
+import com.engrisk.utils.StageBuilder;
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.mashape.unirest.http.exceptions.UnirestException;
 import javafx.beans.property.SimpleStringProperty;
@@ -12,9 +15,11 @@ import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.TableColumn;
+import javafx.scene.control.TableRow;
 import javafx.scene.control.TableView;
 import lombok.SneakyThrows;
 
+import java.io.IOException;
 import java.net.URL;
 import java.util.ResourceBundle;
 
@@ -29,6 +34,34 @@ public class RoomTableController implements Initializable {
     ObservableList<ResponseRoomDTO> data = FXCollections.observableArrayList();
 
     public void initTable() {
+
+        // On row double click
+        table.setRowFactory(tv -> {
+            TableRow<ResponseRoomDTO> row = new TableRow<>();
+
+            row.setOnMouseClicked(event -> {
+                if (event.getClickCount() == 2 && (!row.isEmpty())) {
+                    ResponseRoomDTO selected = row.getItem();
+
+                    try {
+                        // Init controller
+                        RoomFormController controller = new RoomFormController();
+                        controller.room = selected;
+
+                        // Show modal
+                        new StageBuilder("room_form", controller, "Chi tiết phòng thi")
+                                .setModalOwner(event)
+                                .setDimensionsAuto()
+                                .build()
+                                .showAndWait();
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                }
+            });
+
+            return row;
+        });
 
         examNameColumn.setCellValueFactory(cell -> {
             SimpleStringProperty property = new SimpleStringProperty();
@@ -58,12 +91,11 @@ public class RoomTableController implements Initializable {
     }
 
     public void loadData() throws JsonProcessingException, UnirestException {
-        ResponseRoomDTO[] responseRoomDTOs;
         String response = Api.get("room");
-        ObjectMapper mapper = new ObjectMapper();
-        responseRoomDTOs = mapper.readValue(response, ResponseRoomDTO[].class);
+        ResponseRoomDTO[] rooms = Mapper.create()
+                                        .readValue(response, ResponseRoomDTO[].class);
 
-        data.setAll(responseRoomDTOs);
+        data.setAll(rooms);
         table.refresh();
     }
 
@@ -71,7 +103,6 @@ public class RoomTableController implements Initializable {
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
         initTable();
-
         loadData();
     }
 }

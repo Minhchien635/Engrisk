@@ -11,6 +11,7 @@ import com.mashape.unirest.http.Unirest;
 import com.mashape.unirest.http.exceptions.UnirestException;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
+import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.event.Event;
@@ -123,8 +124,7 @@ public class ExamFormController extends BaseFormController {
             updateDTO.setPrice(Long.valueOf(price));
             updateDTO.setExamDate(DateUtils.parseDate(examDatePicker.getValue()));
 
-            ObjectMapper mapper = new ObjectMapper();
-            String body = mapper.writeValueAsString(updateDTO);
+            String body = Mapper.create().writeValueAsString(updateDTO);
             Api.put("exam", body);
         } else {
             CreateExamDTO dto = new CreateExamDTO();
@@ -133,7 +133,7 @@ public class ExamFormController extends BaseFormController {
             dto.setPrice(Long.valueOf(price));
             dto.setExamDate(DateUtils.parseDate(examDatePicker.getValue()));
 
-            String body = new ObjectMapper().writeValueAsString(dto);
+            String body = Mapper.create().writeValueAsString(dto);
             Api.post("exam", body);
         }
 
@@ -261,32 +261,37 @@ public class ExamFormController extends BaseFormController {
 
         if (result.isPresent() && result.get() == ButtonType.OK) {
             String response = Unirest.delete(Api.URL + "attendance/id")
-                                     .queryString("candidateId", attendance.getId().getCandidateId().toString())
-                                     .queryString("examId", attendance.getId().getExamId().toString())
+                                     .queryString("candidateId", attendance.getCandidate().getId().toString())
+                                     .queryString("examId", exam.getId().toString())
                                      .asString()
                                      .getBody();
 
-            ResponseAttendanceDTO responseDTO = new ObjectMapper().readValue(response, ResponseAttendanceDTO.class);
+            ResponseAttendanceDTO responseDTO = Mapper.create()
+                                                      .readValue(response, ResponseAttendanceDTO.class);
             Long deletedCandidateId = responseDTO.getCandidate().getId();
-            attendances.removeIf(x -> x.getId().getCandidateId().equals(deletedCandidateId));
+            attendances.removeIf(x -> x.getCandidate().getId().equals(deletedCandidateId));
         }
     }
 
     public void onArrangeRoomClick(ActionEvent event) throws UnirestException, JsonProcessingException {
+        if (attendances.isEmpty()) {
+            AlertUtils.showWarning("Hãy thêm ít nhất một thí sinh để xếp phòng.");
+            return;
+        }
+
         // Call arrange room api
         String responseString = Unirest.put(Api.URL + "exam/{id}/rearrange")
                                        .routeParam("id", exam.getId().toString())
                                        .asString()
                                        .getBody();
 
-        JSONObject responseJson = new JSONObject(responseString);
-
         // Update data
-        this.exam = new ObjectMapper().readValue(responseString, ResponseExamDTO.class);
+        this.exam = Mapper.create()
+                          .readValue(responseString, ResponseExamDTO.class);
         this.attendances.setAll(exam.getAttendances());
         this.rooms.setAll(exam.getRooms());
         hideAttendanceActionButtons();
-        hideRoomActionButtons();
+        hideRearrangeButton();
     }
 
     public void hideAttendanceActionButtons() {
@@ -294,7 +299,7 @@ public class ExamFormController extends BaseFormController {
         attendanceActionButtons.setVisible(false);
     }
 
-    public void hideRoomActionButtons() {
+    public void hideRearrangeButton() {
         roomActionButtons.setManaged(false);
         roomActionButtons.setVisible(false);
     }
@@ -322,7 +327,7 @@ public class ExamFormController extends BaseFormController {
             // Hide action buttons if rooms are arranged
             if (!exam.getRooms().isEmpty()) {
                 hideAttendanceActionButtons();
-                hideRoomActionButtons();
+                hideRearrangeButton();
             }
 
             // Disable adding/removing attendance 5 days before exam start date
@@ -334,7 +339,7 @@ public class ExamFormController extends BaseFormController {
         }
         // Else create
         else {
-            // Remove attendance table
+            // Remove attendance table and room table
             formBody.getChildren().removeAll(attendanceContainer, roomContainer);
         }
     }
