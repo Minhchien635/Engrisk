@@ -4,6 +4,7 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Font?>
 <VBox xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/17">
     <VBox>
         <padding>
@@ -27,6 +28,11 @@
         <padding>
             <Insets bottom="16.0" left="16.0" right="16.0" top="16.0"/>
         </padding>
+        <Label fx:id="roomLabel" prefHeight="19.0" prefWidth="444.0">
+            <font>
+                <Font size="15.0"/>
+            </font>
+        </Label>
         <Button mnemonicParsing="false" onAction="#onSaveClick" prefWidth="60.0" text="Lưu"/>
         <Button mnemonicParsing="false" onAction="#onCancelClick" prefWidth="60.0" text="Hủy"/>
     </HBox>
