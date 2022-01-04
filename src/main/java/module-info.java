@@ -3,7 +3,6 @@ module com.engrisk.engrisk {
     requires javafx.fxml;
     requires lombok;
     requires modelmapper;
-    requires spring.context;
     requires unirest.java;
     requires com.google.gson;
     requires com.fasterxml.jackson.annotation;
