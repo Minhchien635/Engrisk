@@ -6,12 +6,10 @@ import com.engrisk.dto.Exam.*;
 import com.engrisk.enums.ExamType;
 import com.engrisk.utils.*;
 import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.mashape.unirest.http.Unirest;
 import com.mashape.unirest.http.exceptions.UnirestException;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
-import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.event.Event;
@@ -19,7 +17,6 @@ import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
-import org.json.JSONObject;
 
 import java.io.IOException;
 import java.net.URL;
@@ -34,34 +31,20 @@ public class ExamFormController extends BaseFormController {
     public ResponseExamDTO exam = null;
 
     public ExamTableController examTableController;
-
-    ObservableList<ExamType> examTypes = FXCollections.observableArrayList();
-
-    ObservableList<ResponseAttendanceRef> attendances = FXCollections.observableArrayList();
-
-    ObservableList<ResponseRoomRef> rooms = FXCollections.observableArrayList();
-
     @FXML
     public VBox formBody;
-
     @FXML
     public TextField nameTextField, priceTextField;
-
     @FXML
     public ComboBox<ExamType> typeComboBox;
-
     @FXML
     public DatePicker examDatePicker;
-
     @FXML
     public VBox attendanceContainer, roomContainer;
-
     @FXML
     public HBox attendanceActionButtons, roomActionButtons;
-
     @FXML
     public TableView<ResponseAttendanceRef> attendanceTableView;
-
     @FXML
     public TableColumn<ResponseAttendanceRef, String> attendanceNameCol,
             attendancePhoneCol,
@@ -72,12 +55,13 @@ public class ExamFormController extends BaseFormController {
             attendanceCitizenIdNumberCol,
             attendanceCitizenIdDateCol,
             attendanceCitizenIdPlaceCol;
-
     @FXML
     public TableView<ResponseRoomRef> roomTableView;
-
     @FXML
     public TableColumn<ResponseRoomRef, String> roomNameCol;
+    ObservableList<ExamType> examTypes = FXCollections.observableArrayList();
+    ObservableList<ResponseAttendanceRef> attendances = FXCollections.observableArrayList();
+    ObservableList<ResponseRoomRef> rooms = FXCollections.observableArrayList();
 
     @Override
     public void onSaveClick(Event event) throws JsonProcessingException, UnirestException {
@@ -261,13 +245,13 @@ public class ExamFormController extends BaseFormController {
 
         if (result.isPresent() && result.get() == ButtonType.OK) {
             String response = Unirest.delete(Api.URL + "attendance/id")
-                                     .queryString("candidateId", attendance.getCandidate().getId().toString())
-                                     .queryString("examId", exam.getId().toString())
-                                     .asString()
-                                     .getBody();
+                    .queryString("candidateId", attendance.getCandidate().getId().toString())
+                    .queryString("examId", exam.getId().toString())
+                    .asString()
+                    .getBody();
 
             ResponseAttendanceDTO responseDTO = Mapper.create()
-                                                      .readValue(response, ResponseAttendanceDTO.class);
+                    .readValue(response, ResponseAttendanceDTO.class);
             Long deletedCandidateId = responseDTO.getCandidate().getId();
             attendances.removeIf(x -> x.getCandidate().getId().equals(deletedCandidateId));
         }
@@ -281,13 +265,13 @@ public class ExamFormController extends BaseFormController {
 
         // Call arrange room api
         String responseString = Unirest.put(Api.URL + "exam/{id}/rearrange")
-                                       .routeParam("id", exam.getId().toString())
-                                       .asString()
-                                       .getBody();
+                .routeParam("id", exam.getId().toString())
+                .asString()
+                .getBody();
 
         // Update data
         this.exam = Mapper.create()
-                          .readValue(responseString, ResponseExamDTO.class);
+                .readValue(responseString, ResponseExamDTO.class);
         this.attendances.setAll(exam.getAttendances());
         this.rooms.setAll(exam.getRooms());
         hideAttendanceActionButtons();

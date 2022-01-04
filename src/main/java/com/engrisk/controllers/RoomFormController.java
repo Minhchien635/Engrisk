@@ -1,12 +1,11 @@
 package com.engrisk.controllers;
 
 import com.engrisk.api.Api;
-import com.engrisk.dto.Attendance.ResponseAttendanceDTO;
 import com.engrisk.dto.Attendance.UpdateAttendanceResultDTO;
+import com.engrisk.dto.Candidate.ResponseAttendanceRef;
 import com.engrisk.dto.Room.ResponseRoomDTO;
 import com.engrisk.utils.AlertUtils;
 import com.engrisk.utils.Mapper;
-import com.engrisk.utils.NumberUtils;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.mashape.unirest.http.exceptions.UnirestException;
 import javafx.beans.property.SimpleStringProperty;
@@ -14,65 +13,44 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.Event;
 import javafx.fxml.FXML;
-import javafx.scene.control.*;
+import javafx.scene.control.TableColumn;
+import javafx.scene.control.TableView;
 import javafx.scene.control.cell.TextFieldTableCell;
 import lombok.SneakyThrows;
 
 import java.net.URL;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.ResourceBundle;
-import java.util.stream.Collectors;
 
 public class RoomFormController extends BaseFormController {
     public ResponseRoomDTO room = new ResponseRoomDTO();
-
-    ObservableList<ResponseAttendanceDTO> attendances = FXCollections.observableArrayList();
-
     @FXML
-    public TableView<ResponseAttendanceDTO> attendanceTableView;
-
+    public TableView<ResponseAttendanceRef> attendanceTableView;
     @FXML
-    public TableColumn<ResponseAttendanceDTO, String> idColumn,
-            nameColumn,
-            listenColumn,
-            speakColumn,
-            readColumn,
-            writeColumn;
+    public TableColumn<ResponseAttendanceRef, String> idColumn, nameColumn, listenColumn, speakColumn, readColumn, writeColumn;
+    ObservableList<ResponseAttendanceRef> attendances = FXCollections.observableArrayList();
 
     public void onSaveClick(Event event) throws JsonProcessingException, UnirestException {
-        for (ResponseAttendanceDTO attendanceDTO : attendances) {
+        ArrayList<UpdateAttendanceResultDTO> updateAttendanceResultDTOS = new ArrayList<>();
+        for (ResponseAttendanceRef attendanceDTO : attendances) {
             UpdateAttendanceResultDTO dto = new UpdateAttendanceResultDTO();
             dto.setCandidateId(attendanceDTO.getCandidate().getId());
-            dto.setExamId(attendanceDTO.getExam().getId());
             dto.setListening(attendanceDTO.getListening());
             dto.setSpeaking(attendanceDTO.getSpeaking());
             dto.setReading(attendanceDTO.getReading());
             dto.setWriting(attendanceDTO.getWriting());
 
-            String request = Mapper.create().writeValueAsString(dto);
-            Api.put("attendance", request);
+            updateAttendanceResultDTOS.add(dto);
         }
+
+        String request = Mapper.create().writeValueAsString(updateAttendanceResultDTOS);
+        Api.put("room/{id}/updateResults", request);
         closeWindow(event);
     }
 
     @Override
     public void initFormValues() {
-
-    }
-
-    public void loadData() throws UnirestException, JsonProcessingException {
-        String response = Api.get("attendance");
-        ResponseAttendanceDTO[] responseAttendanceDTOs = Mapper.create()
-                                                               .readValue(response, ResponseAttendanceDTO[].class);
-
-        ArrayList<ResponseAttendanceDTO> attendancesOfRoom = (ArrayList<ResponseAttendanceDTO>) Arrays
-                .stream(responseAttendanceDTOs)
-                .filter(p -> p.getRoom().getName().equals(room.getName())
-                        && p.getExam().getId().equals(room.getExam().getId()))
-                .collect(Collectors.toList());
-
-        attendances.setAll(attendancesOfRoom);
+        attendances.addAll(room.getAttendances());
     }
 
     public void initTable() {
@@ -97,7 +75,7 @@ public class RoomFormController extends BaseFormController {
         });
         listenColumn.setCellFactory(TextFieldTableCell.forTableColumn());
         listenColumn.setMinWidth(50);
-        listenColumn.setOnEditCommit((TableColumn.CellEditEvent<ResponseAttendanceDTO, String> event) -> {
+        listenColumn.setOnEditCommit((TableColumn.CellEditEvent<ResponseAttendanceRef, String> event) -> {
             try {
                 // Parse input to float
                 float floatValue = Float.parseFloat(event.getNewValue().trim());
@@ -109,7 +87,7 @@ public class RoomFormController extends BaseFormController {
                 }
 
                 // Update table data
-                ResponseAttendanceDTO row = event.getRowValue();
+                ResponseAttendanceRef row = event.getRowValue();
                 row.setListening(floatValue);
                 attendanceTableView.refresh();
             } catch (NumberFormatException e) {
@@ -126,7 +104,7 @@ public class RoomFormController extends BaseFormController {
         });
         speakColumn.setCellFactory(TextFieldTableCell.forTableColumn());
         speakColumn.setMinWidth(50);
-        speakColumn.setOnEditCommit((TableColumn.CellEditEvent<ResponseAttendanceDTO, String> event) -> {
+        speakColumn.setOnEditCommit((TableColumn.CellEditEvent<ResponseAttendanceRef, String> event) -> {
             try {
                 // Parse input to float
                 float floatValue = Float.parseFloat(event.getNewValue().trim());
@@ -138,7 +116,7 @@ public class RoomFormController extends BaseFormController {
                 }
 
                 // Update table data
-                ResponseAttendanceDTO row = event.getRowValue();
+                ResponseAttendanceRef row = event.getRowValue();
                 row.setSpeaking(floatValue);
                 attendanceTableView.refresh();
             } catch (NumberFormatException e) {
@@ -155,7 +133,7 @@ public class RoomFormController extends BaseFormController {
         });
         readColumn.setCellFactory(TextFieldTableCell.forTableColumn());
         readColumn.setMinWidth(50);
-        readColumn.setOnEditCommit((TableColumn.CellEditEvent<ResponseAttendanceDTO, String> event) -> {
+        readColumn.setOnEditCommit((TableColumn.CellEditEvent<ResponseAttendanceRef, String> event) -> {
             try {
                 // Parse input to float
                 float floatValue = Float.parseFloat(event.getNewValue().trim());
@@ -167,7 +145,7 @@ public class RoomFormController extends BaseFormController {
                 }
 
                 // Update table data
-                ResponseAttendanceDTO row = event.getRowValue();
+                ResponseAttendanceRef row = event.getRowValue();
                 row.setReading(floatValue);
                 attendanceTableView.refresh();
             } catch (NumberFormatException e) {
@@ -184,7 +162,7 @@ public class RoomFormController extends BaseFormController {
         });
         writeColumn.setCellFactory(TextFieldTableCell.forTableColumn());
         writeColumn.setMinWidth(50);
-        writeColumn.setOnEditCommit((TableColumn.CellEditEvent<ResponseAttendanceDTO, String> event) -> {
+        writeColumn.setOnEditCommit((TableColumn.CellEditEvent<ResponseAttendanceRef, String> event) -> {
             try {
                 // Parse input to float
                 float floatValue = Float.parseFloat(event.getNewValue().trim());
@@ -196,7 +174,7 @@ public class RoomFormController extends BaseFormController {
                 }
 
                 // Update table data
-                ResponseAttendanceDTO row = event.getRowValue();
+                ResponseAttendanceRef row = event.getRowValue();
                 row.setWriting(floatValue);
                 attendanceTableView.refresh();
             } catch (NumberFormatException e) {
@@ -211,6 +189,6 @@ public class RoomFormController extends BaseFormController {
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
         initTable();
-        loadData();
+        initFormValues();
     }
 }

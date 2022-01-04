@@ -16,37 +16,37 @@ public class Api {
 
     public static JSONObject get(String route, String id) throws UnirestException {
         HttpResponse<JsonNode> apiResponse = Unirest.get(URL + route)
-                                                    .header("accept", "application/json")
-                                                    .header("content-type", "application/json")
-                                                    .routeParam("id", id)
-                                                    .asJson();
+                .header("accept", "application/json")
+                .header("content-type", "application/json")
+                .routeParam("id", id)
+                .asJson();
         return apiResponse.getBody().getObject();
     }
 
     public static JSONObject post(String route, String body) throws UnirestException {
         HttpResponse<JsonNode> apiResponse = Unirest.post(URL + route)
-                                                    .header("accept", "application/json")
-                                                    .header("content-type", "application/json")
-                                                    .body(body)
-                                                    .asJson();
+                .header("accept", "application/json")
+                .header("content-type", "application/json")
+                .body(body)
+                .asJson();
         return apiResponse.getBody().getObject();
     }
 
     public static JSONObject put(String route, String body) throws UnirestException {
         HttpResponse<JsonNode> apiResponse = Unirest.put(URL + route)
-                                                    .header("accept", "application/json")
-                                                    .header("content-type", "application/json")
-                                                    .body(body)
-                                                    .asJson();
+                .header("accept", "application/json")
+                .header("content-type", "application/json")
+                .body(body)
+                .asJson();
         return apiResponse.getBody().getObject();
     }
 
     public static JSONObject delete(String route, String id) throws UnirestException {
         HttpResponse<JsonNode> apiResponse = Unirest.delete(URL + route)
-                                                    .header("accept", "application/json")
-                                                    .header("content-type", "application/json")
-                                                    .routeParam("id", id)
-                                                    .asJson();
+                .header("accept", "application/json")
+                .header("content-type", "application/json")
+                .routeParam("id", id)
+                .asJson();
         return apiResponse.getBody().getObject();
     }
 }

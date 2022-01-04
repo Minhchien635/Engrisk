@@ -9,7 +9,6 @@ import com.engrisk.utils.AlertUtils;
 import com.engrisk.utils.DateUtils;
 import com.engrisk.utils.Mapper;
 import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.mashape.unirest.http.exceptions.UnirestException;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -129,6 +128,7 @@ public class CandidateFormController extends BaseFormController {
             response = Api.post("candidate", requestBody);
         } else {
             UpdateCandidateDTO updateDTO = new UpdateCandidateDTO();
+            updateDTO.setId(candidate.getId());
             updateDTO.setName(name);
             updateDTO.setBirthDate(DateUtils.parseDate(birthDate));
             updateDTO.setSex(sexType);
@@ -139,12 +139,12 @@ public class CandidateFormController extends BaseFormController {
             updateDTO.setEmail(email);
             updateDTO.setPhone(phoneNumber);
 
-            String requestBody = Mapper.create().writeValueAsString(candidate);
+            String requestBody = Mapper.create().writeValueAsString(updateDTO);
             response = Api.put("candidate", requestBody);
         }
 
         if (response.has("error")) {
-            AlertUtils.showWarning("Số căn cước công dân đã tồn tại trên hệ thống: ");
+            AlertUtils.showWarning("Số căn cước công dân đã tồn tại trên hệ thống");
             return;
         }
 

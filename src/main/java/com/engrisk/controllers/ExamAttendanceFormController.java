@@ -10,13 +10,10 @@ import com.engrisk.utils.DateUtils;
 import com.engrisk.utils.EnumUtils;
 import com.engrisk.utils.Mapper;
 import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.DeserializationFeature;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.mashape.unirest.http.exceptions.UnirestException;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
-import javafx.event.ActionEvent;
 import javafx.event.Event;
 import javafx.fxml.FXML;
 import javafx.scene.control.TableColumn;
@@ -32,12 +29,6 @@ import java.util.stream.Collectors;
 
 public class ExamAttendanceFormController extends BaseFormController {
     public ExamFormController examFormController;
-
-    @FXML
-    TableView<ResponseCandidateDTO> candidateTableView;
-
-    ObservableList<ResponseCandidateDTO> data = FXCollections.observableArrayList();
-
     @FXML
     public TableColumn<ResponseCandidateDTO, String> candidateNameCol,
             candidatePhoneCol,
@@ -48,6 +39,9 @@ public class ExamAttendanceFormController extends BaseFormController {
             candidateCitizenIdNumberCol,
             candidateCitizenIdDateCol,
             candidateCitizenIdPlaceCol;
+    @FXML
+    TableView<ResponseCandidateDTO> candidateTableView;
+    ObservableList<ResponseCandidateDTO> data = FXCollections.observableArrayList();
 
     @Override
     public void onSaveClick(Event event) throws JsonProcessingException, UnirestException {
@@ -73,7 +67,7 @@ public class ExamAttendanceFormController extends BaseFormController {
         }
 
         ResponseAttendanceDTO responseDTO = Mapper.create()
-                                                  .readValue(response.toString(), ResponseAttendanceDTO.class);
+                .readValue(response.toString(), ResponseAttendanceDTO.class);
         ResponseAttendanceRef examAttendance = new ResponseAttendanceRef();
         examAttendance.setCandidate(responseDTO.getCandidate());
         examAttendance.setCode(responseDTO.getCode());
@@ -103,12 +97,12 @@ public class ExamAttendanceFormController extends BaseFormController {
         // Get all candidates
         String response = Api.get("candidate");
         ResponseCandidateDTO[] candidates = Mapper.create()
-                                                  .readValue(response, ResponseCandidateDTO[].class);
+                .readValue(response, ResponseCandidateDTO[].class);
 
         // Only show candidates that aren't in this exam
         data.setAll(Arrays.stream(candidates)
-                          .filter(x -> !existedCandidateIds.contains(x.getId()))
-                          .collect(Collectors.toList()));
+                .filter(x -> !existedCandidateIds.contains(x.getId()))
+                .collect(Collectors.toList()));
     }
 
     public void initCandidateTable() {

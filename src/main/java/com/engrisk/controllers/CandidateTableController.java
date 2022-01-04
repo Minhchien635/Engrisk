@@ -7,7 +7,6 @@ import com.engrisk.utils.DateUtils;
 import com.engrisk.utils.Mapper;
 import com.engrisk.utils.StageBuilder;
 import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.mashape.unirest.http.exceptions.UnirestException;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
@@ -194,7 +193,7 @@ public class CandidateTableController extends BaseTableController {
 
         if (!response.equals("[]")) {
             ResponseCandidateDTO[] responseCandidateDTOs = Mapper.create()
-                                                                 .readValue(response, ResponseCandidateDTO[].class);
+                    .readValue(response, ResponseCandidateDTO[].class);
 
             for (ResponseCandidateDTO candidateDto : responseCandidateDTOs) {
                 ResponseCandidateDTO candidate = new ResponseCandidateDTO();

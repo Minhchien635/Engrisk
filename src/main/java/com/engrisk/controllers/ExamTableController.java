@@ -4,8 +4,6 @@ import com.engrisk.api.Api;
 import com.engrisk.dto.Exam.ResponseExamDTO;
 import com.engrisk.utils.*;
 import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.DeserializationFeature;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.mashape.unirest.http.exceptions.UnirestException;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
@@ -89,7 +87,7 @@ public class ExamTableController extends BaseTableController {
         String response = Api.get("exam");
 
         ResponseExamDTO[] exams = Mapper.create()
-                                        .readValue(response, ResponseExamDTO[].class);
+                .readValue(response, ResponseExamDTO[].class);
 
         data.setAll(exams);
     }

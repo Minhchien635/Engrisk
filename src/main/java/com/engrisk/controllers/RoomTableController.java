@@ -7,8 +7,6 @@ import com.engrisk.utils.DateUtils;
 import com.engrisk.utils.Mapper;
 import com.engrisk.utils.StageBuilder;
 import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.DeserializationFeature;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.mashape.unirest.http.exceptions.UnirestException;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
@@ -104,7 +102,7 @@ public class RoomTableController implements Initializable {
     public void loadData() throws JsonProcessingException, UnirestException {
         String response = Api.get("room");
         ResponseRoomDTO[] rooms = Mapper.create()
-                                        .readValue(response, ResponseRoomDTO[].class);
+                .readValue(response, ResponseRoomDTO[].class);
 
         data.setAll(rooms);
         table.refresh();

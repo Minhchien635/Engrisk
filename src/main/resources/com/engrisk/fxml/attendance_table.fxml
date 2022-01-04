@@ -28,6 +28,4 @@
             <TableColumn fx:id="writingColumn" minWidth="100.0" prefWidth="-1.0" text="Viết"/>
         </columns>
     </TableView>
-    <Button fx:id="saveButton" mnemonicParsing="false" onAction="#onSaveClick" prefHeight="24.0" prefWidth="1001.0"
-            text="Lưu"/>
 </VBox>

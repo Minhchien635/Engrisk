@@ -1,10 +1,11 @@
 package com.engrisk.dto.Candidate;
 
+import com.engrisk.dto.Exam.ResponseCandidateRef;
 import lombok.Data;
 
 @Data
 public class ResponseAttendanceRef {
-    private ResponseExamRef exam;
+    private ResponseCandidateRef candidate;
 
     private Float listening;
 

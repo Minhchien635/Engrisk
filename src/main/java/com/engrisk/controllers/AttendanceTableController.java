@@ -2,23 +2,20 @@ package com.engrisk.controllers;
 
 import com.engrisk.api.Api;
 import com.engrisk.dto.Attendance.ResponseAttendanceDTO;
-import com.engrisk.dto.Attendance.UpdateAttendanceResultDTO;
 import com.engrisk.dto.Exam.ResponseCandidateRef;
-import com.engrisk.utils.AlertUtils;
 import com.engrisk.utils.DateUtils;
 import com.engrisk.utils.Mapper;
-import com.engrisk.utils.NumberUtils;
 import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.DeserializationFeature;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.mashape.unirest.http.exceptions.UnirestException;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
-import javafx.scene.control.*;
-import javafx.scene.control.cell.TextFieldTableCell;
+import javafx.scene.control.Button;
+import javafx.scene.control.TableColumn;
+import javafx.scene.control.TableView;
+import javafx.scene.control.TextField;
 import javafx.scene.input.KeyCode;
 import lombok.SneakyThrows;
 
@@ -45,7 +42,7 @@ public class AttendanceTableController implements Initializable {
             readingColumn,
             writingColumn;
     @FXML
-    public Button searchButton, saveButton;
+    public Button searchButton;
 
     @FXML
     TextField nameTextField, phoneTextField;
@@ -83,8 +80,8 @@ public class AttendanceTableController implements Initializable {
         };
 
         filteredData.setAll(data.stream()
-                                .filter(predicate)
-                                .collect(Collectors.toList()));
+                .filter(predicate)
+                .collect(Collectors.toList()));
     }
 
     public void initTable() {
@@ -166,30 +163,12 @@ public class AttendanceTableController implements Initializable {
         });
     }
 
-    public void onSaveClick() throws JsonProcessingException, UnirestException {
-        for (ResponseAttendanceDTO attendanceDTO : data) {
-            UpdateAttendanceResultDTO dto = new UpdateAttendanceResultDTO();
-            dto.setCandidateId(attendanceDTO.getCandidate().getId());
-            dto.setExamId(attendanceDTO.getExam().getId());
-            dto.setListening(attendanceDTO.getListening());
-            dto.setSpeaking(attendanceDTO.getSpeaking());
-            dto.setReading(attendanceDTO.getReading());
-            dto.setWriting(attendanceDTO.getWriting());
-
-            String request = Mapper.create()
-                                   .writeValueAsString(dto);
-            Api.put("attendance", request);
-        }
-
-        loadData();
-    }
-
     public void loadData() throws UnirestException, JsonProcessingException {
         // Get data from server and set to data array and filtered data
         ResponseAttendanceDTO[] responseAttendanceDTOs;
         String response = Api.get("attendance");
         responseAttendanceDTOs = Mapper.create()
-                                       .readValue(response, ResponseAttendanceDTO[].class);
+                .readValue(response, ResponseAttendanceDTO[].class);
 
         data.clear();
         filteredData.clear();
