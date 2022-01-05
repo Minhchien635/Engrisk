@@ -291,6 +291,7 @@ public class ExamFormController extends BaseFormController {
                     .readValue(responseString, ResponseExamDTO.class);
             this.attendances.setAll(exam.getAttendances());
             this.rooms.setAll(exam.getRooms());
+            typeComboBox.setDisable(true);
             hideAttendanceActionButtons();
             hideRearrangeButton();
         }
@@ -309,6 +310,9 @@ public class ExamFormController extends BaseFormController {
     @Override
     public void initFormValues() {
         nameTextField.setText(exam.getName());
+        if (!exam.getRooms().isEmpty()) {
+            typeComboBox.setDisable(true);
+        }
         typeComboBox.setValue(exam.type);
         priceTextField.setText(exam.getPrice().toString());
         examDatePicker.setValue(DateUtils.parseLocalDate(exam.getExamDate()));
