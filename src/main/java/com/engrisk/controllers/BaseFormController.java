@@ -16,7 +16,7 @@ public abstract class BaseFormController implements Initializable {
     @FXML
     public Button saveButton;
 
-    public void closeWindow(EventObject event) {
+    public void closeWindow(EventObject event) throws UnirestException, JsonProcessingException {
         WindowUtils.closeWindow(event);
     }
 

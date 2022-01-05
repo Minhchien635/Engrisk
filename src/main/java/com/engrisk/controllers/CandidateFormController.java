@@ -25,7 +25,6 @@ import java.util.Date;
 import java.util.ResourceBundle;
 
 public class CandidateFormController extends BaseFormController {
-
     public ResponseCandidateDTO candidate = null;
 
     public CandidateTableController candidateTableController;
@@ -89,7 +88,7 @@ public class CandidateFormController extends BaseFormController {
         }
 
         String citizenIdPlace = citizenIdPlaceTextField.getText();
-        if (citizenIdPlace == null) {
+        if (citizenIdPlace.trim().isEmpty()) {
             AlertUtils.showWarning("Hãy nhập nơi cấp căn cước công dân");
             return;
         }

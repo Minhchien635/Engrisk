@@ -37,6 +37,10 @@ public class StageBuilder {
         return this;
     }
 
+    public Stage getStage() {
+        return this.stage;
+    }
+
     public StageBuilder setDimensions(int width, int height) {
         this.width = width;
         this.height = height;

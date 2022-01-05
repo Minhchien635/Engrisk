@@ -31,20 +31,28 @@ public class ExamFormController extends BaseFormController {
     public ResponseExamDTO exam = null;
 
     public ExamTableController examTableController;
+
     @FXML
     public VBox formBody;
+
     @FXML
     public TextField nameTextField, priceTextField;
+
     @FXML
     public ComboBox<ExamType> typeComboBox;
+
     @FXML
     public DatePicker examDatePicker;
+
     @FXML
     public VBox attendanceContainer, roomContainer;
+
     @FXML
     public HBox attendanceActionButtons, roomActionButtons;
+
     @FXML
     public TableView<ResponseAttendanceRef> attendanceTableView;
+
     @FXML
     public TableColumn<ResponseAttendanceRef, String> attendanceNameCol,
             attendancePhoneCol,
@@ -55,12 +63,17 @@ public class ExamFormController extends BaseFormController {
             attendanceCitizenIdNumberCol,
             attendanceCitizenIdDateCol,
             attendanceCitizenIdPlaceCol;
+
     @FXML
     public TableView<ResponseRoomRef> roomTableView;
+
     @FXML
     public TableColumn<ResponseRoomRef, String> roomNameCol;
+
     ObservableList<ExamType> examTypes = FXCollections.observableArrayList();
+
     ObservableList<ResponseAttendanceRef> attendances = FXCollections.observableArrayList();
+
     ObservableList<ResponseRoomRef> rooms = FXCollections.observableArrayList();
 
     @Override

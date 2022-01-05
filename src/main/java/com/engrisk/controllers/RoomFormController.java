@@ -6,6 +6,7 @@ import com.engrisk.dto.Candidate.ResponseAttendanceRef;
 import com.engrisk.dto.Room.ResponseRoomDTO;
 import com.engrisk.utils.AlertUtils;
 import com.engrisk.utils.Mapper;
+import com.engrisk.utils.WindowUtils;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.mashape.unirest.http.exceptions.UnirestException;
 import javafx.beans.property.SimpleStringProperty;
@@ -21,16 +22,23 @@ import lombok.SneakyThrows;
 
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.EventObject;
 import java.util.ResourceBundle;
 
 public class RoomFormController extends BaseFormController {
-    public ResponseRoomDTO room = new ResponseRoomDTO();
+    public RoomTableController roomTableController;
+
+    public ResponseRoomDTO room;
+
     @FXML
     public Label roomLabel;
+
     @FXML
     public TableView<ResponseAttendanceRef> attendanceTableView;
+
     @FXML
     public TableColumn<ResponseAttendanceRef, String> idColumn, nameColumn, listenColumn, speakColumn, readColumn, writeColumn;
+
     ObservableList<ResponseAttendanceRef> attendances = FXCollections.observableArrayList();
 
     public void onSaveClick(Event event) throws JsonProcessingException, UnirestException {
@@ -48,7 +56,14 @@ public class RoomFormController extends BaseFormController {
 
         String request = Mapper.create().writeValueAsString(updateAttendanceResultDTOS);
         Api.put("room/{id}/updateResults", request, room.getId());
+
         closeWindow(event);
+    }
+
+    @Override
+    public void closeWindow(EventObject event) throws UnirestException, JsonProcessingException {
+        roomTableController.loadData();
+        WindowUtils.closeWindow(event);
     }
 
     @Override

@@ -41,6 +41,7 @@ public class AttendanceTableController implements Initializable {
             speakingColumn,
             readingColumn,
             writingColumn;
+
     @FXML
     public Button searchButton;
 

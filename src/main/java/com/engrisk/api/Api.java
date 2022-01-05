@@ -32,13 +32,22 @@ public class Api {
         return apiResponse.getBody().getObject();
     }
 
-    public static JSONObject put(String route, String body, Long ...id) throws UnirestException {
-        HttpResponse<JsonNode> apiResponse = Unirest.put(URL + route)
-                .header("accept", "application/json")
-                .header("content-type", "application/json")
-                .routeParam("id", String.valueOf(id[0]))
-                .body(body)
-                .asJson();
+    public static JSONObject put(String route, String body, Long... id) throws UnirestException {
+        HttpResponse<JsonNode> apiResponse;
+        if (id.length != 0) {
+            apiResponse = Unirest.put(URL + route)
+                    .header("accept", "application/json")
+                    .header("content-type", "application/json")
+                    .routeParam("id", id.length != 0 ? String.valueOf(id[0]) : "")
+                    .body(body)
+                    .asJson();
+        } else {
+            apiResponse = Unirest.put(URL + route)
+                    .header("accept", "application/json")
+                    .header("content-type", "application/json")
+                    .body(body)
+                    .asJson();
+        }
         return apiResponse.getBody().getObject();
     }
 

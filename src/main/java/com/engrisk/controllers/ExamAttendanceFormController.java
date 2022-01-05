@@ -29,6 +29,7 @@ import java.util.stream.Collectors;
 
 public class ExamAttendanceFormController extends BaseFormController {
     public ExamFormController examFormController;
+
     @FXML
     public TableColumn<ResponseCandidateDTO, String> candidateNameCol,
             candidatePhoneCol,
@@ -39,8 +40,10 @@ public class ExamAttendanceFormController extends BaseFormController {
             candidateCitizenIdNumberCol,
             candidateCitizenIdDateCol,
             candidateCitizenIdPlaceCol;
+
     @FXML
-    TableView<ResponseCandidateDTO> candidateTableView;
+    public TableView<ResponseCandidateDTO> candidateTableView;
+
     ObservableList<ResponseCandidateDTO> data = FXCollections.observableArrayList();
 
     @Override

@@ -17,6 +17,7 @@ import javafx.fxml.Initializable;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableRow;
 import javafx.scene.control.TableView;
+import javafx.stage.WindowEvent;
 import lombok.SneakyThrows;
 
 import java.io.IOException;
@@ -33,7 +34,7 @@ public class RoomTableController implements Initializable {
     // Data got from server
     ObservableList<ResponseRoomDTO> data = FXCollections.observableArrayList();
 
-    public void onEditClick(Event event) throws IOException {
+    public void onEditClick(Event event) throws IOException, UnirestException {
         ResponseRoomDTO selectedRoom = table.getSelectionModel().getSelectedItem();
 
         if (selectedRoom == null) {
@@ -44,10 +45,20 @@ public class RoomTableController implements Initializable {
         // Init controller
         RoomFormController controller = new RoomFormController();
         controller.room = selectedRoom;
+        controller.roomTableController = this;
 
         // Show modal
-        new StageBuilder("room_form", controller, "Nhập điểm")
-                .setModalOwner(event)
+        StageBuilder stageBuilder = new StageBuilder("room_form", controller, "Nhập điểm");
+        stageBuilder.getStage().addEventFilter(WindowEvent.WINDOW_CLOSE_REQUEST, windowEvent -> {
+            try {
+                loadData();
+            } catch (JsonProcessingException e) {
+                e.printStackTrace();
+            } catch (UnirestException e) {
+                e.printStackTrace();
+            }
+        });
+        stageBuilder.setModalOwner(event)
                 .setDimensionsAuto()
                 .build()
                 .showAndWait();
@@ -63,7 +74,7 @@ public class RoomTableController implements Initializable {
                 if (event.getClickCount() == 2 && (!row.isEmpty())) {
                     try {
                         onEditClick(event);
-                    } catch (IOException e) {
+                    } catch (IOException | UnirestException e) {
                         e.printStackTrace();
                     }
                 }
@@ -104,6 +115,7 @@ public class RoomTableController implements Initializable {
         ResponseRoomDTO[] rooms = Mapper.create()
                 .readValue(response, ResponseRoomDTO[].class);
 
+        data.clear();
         data.setAll(rooms);
         table.refresh();
     }
