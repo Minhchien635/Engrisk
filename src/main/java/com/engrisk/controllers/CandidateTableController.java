@@ -189,32 +189,13 @@ public class CandidateTableController extends BaseTableController {
     @Override
     public void loadData() throws JsonProcessingException, UnirestException {
         String response = Api.get("candidate");
-        ArrayList<ResponseCandidateDTO> candidates = new ArrayList<>();
 
         if (!response.equals("[]")) {
             ResponseCandidateDTO[] responseCandidateDTOs = Mapper.create()
                     .readValue(response, ResponseCandidateDTO[].class);
-
-            for (ResponseCandidateDTO candidateDto : responseCandidateDTOs) {
-                ResponseCandidateDTO candidate = new ResponseCandidateDTO();
-
-                candidate.setId(candidateDto.getId());
-                candidate.setName(candidateDto.getName());
-                candidate.setBirthDate(candidateDto.getBirthDate());
-                candidate.setSex(candidateDto.getSex());
-                candidate.setBirthPlace(candidateDto.getBirthPlace());
-                candidate.setCitizenId(candidateDto.getCitizenId());
-                candidate.setCitizenIdDate(candidateDto.getCitizenIdDate());
-                candidate.setCitizenIdPlace(candidateDto.getCitizenIdPlace());
-                candidate.setEmail(candidateDto.getEmail());
-                candidate.setPhone(candidateDto.getPhone());
-
-                candidates.add(candidate);
-            }
+            data.setAll(responseCandidateDTOs);
+            table.refresh();
         }
-
-        data.setAll(candidates);
-        table.refresh();
     }
 
     @Override
